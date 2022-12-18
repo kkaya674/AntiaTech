@@ -1,21 +1,26 @@
-#include <L298N.h> // include the L298N library
 
 // define the pins for the motor driver
-#define ENA 6
-#define IN1 7
-#define IN2 8
+
+#define ENA 2
+#define IN1_1 3
+#define IN1_2 4 
+#define ENB 6
+#define IN2_1 7
+#define IN2_2 8
 
 // define the pin for the potentiometer
 #define POT A0
 
-// create an instance of the L298N class
-L298N motor(ENA, IN1, IN2);
+
 
 void setup() {
   // set the motor driver pins as outputs
   pinMode(ENA, OUTPUT);
-  pinMode(IN1, OUTPUT);
-  pinMode(IN2, OUTPUT);
+  pinMode(IN1_1, OUTPUT);
+  pinMode(IN2_1, OUTPUT);
+  pinMode(ENA, OUTPUT);
+  pinMode(IN1_2, OUTPUT);
+  pinMode(IN2_2, OUTPUT);
 }
 
 void loop() {
@@ -26,5 +31,10 @@ void loop() {
   int speed = map(potValue, 0, 1023, 0, 255);
   
   // set the speed of the motor using the L298N library
-  motor.setSpeed(speed);
+  digitalWrite(IN1_1,HIGH);
+  digitalWrite(IN1_2,LOW);
+  digitalWrite(IN2_1,HIGH);
+  digitalWrite(IN2_1,LOW);
+  analogWrite(ENA,speed);
+  analogWrite(ENB,speed);
 }
