@@ -1,0 +1,8 @@
+v1.0
+
+Testi yapıldı. Aşağıdaki sorunların çözülmesi gerekiyor.
+	a. Bazı komutları çok iyi anlamasına rağmen birkaç komudu anlamakta başarısız. Her 
+komut için kodun en çok anladığı kelimeler doğru kabul edilerek performans geliştirilebilir 
+(örnek olarak faster <--> pastor).
+	b. Kodun çalışmasını engellememesine rağmen her çalışmada terminalde birçok hata
+satırı oluyor. Bunun düzeltilmesi gerekiyor. 
