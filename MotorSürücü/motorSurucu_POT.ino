@@ -1,8 +1,8 @@
 
 // define the pins for the motor driver
 
-#define ENA 2
-#define IN1_1 3
+#define ENA 3
+#define IN1_1 2
 #define IN1_2 4 
 #define ENB 6
 #define IN2_1 7
@@ -14,6 +14,7 @@
 
 
 void setup() {
+  Serial.begin(9600);
   // set the motor driver pins as outputs
   pinMode(ENA, OUTPUT);
   pinMode(IN1_1, OUTPUT);
@@ -34,7 +35,7 @@ void loop() {
   digitalWrite(IN1_1,HIGH);
   digitalWrite(IN1_2,LOW);
   digitalWrite(IN2_1,HIGH);
-  digitalWrite(IN2_1,LOW);
+  digitalWrite(IN2_2,LOW);
   analogWrite(ENA,speed);
   analogWrite(ENB,speed);
 }
