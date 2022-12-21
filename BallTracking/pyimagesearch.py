@@ -1,4 +1,4 @@
-#rınnerCode python pyimagesearch.py --video tableTennisBall.mp4 --> 250 frame
+#runnerCode python pyimagesearch.py --video xfile.mp4 
 
 
 # import the necessary packages
