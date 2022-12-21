@@ -1,4 +1,6 @@
 #rınnerCode python pyimagesearch.py --video tableTennisBall.mp4 --> 250 frame
+
+
 # import the necessary packages
 from collections import deque
 from imutils.video import VideoStream
@@ -9,10 +11,17 @@ import imutils
 import time
 import math
 
+"""
+    frame = frame[:,180:1790]  # masanın ucundan fileye 130cm ölçüldü, bu da 1610 pixel'e denk geliyor
+"""
+auto = 1
+m_pix_ratio = 1.3 / 1610  
+secBetweenFrames = 1 / 60 
 
-# return x pixels/second (assuming 30fps)
+# return m/s
 def MeasureSpeed(prevLocation, currentLocation):
-    return int(30*math.sqrt((prevLocation[0]-currentLocation[0])**2 + (prevLocation[1]-currentLocation[1])**2))
+    return math.sqrt(
+        (prevLocation[0]-currentLocation[0])**2 + (prevLocation[1]-currentLocation[1])**2) *m_pix_ratio / secBetweenFrames
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -28,9 +37,9 @@ prevLocation=[0,0]
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
 # list of tracked points
-greenLower = (5, 102-40, 204-80)#greenLower = (29, 86, 6)
+greenLower = (5, 142, 204-80)#greenLower = (29, 86, 6)
 # (15,58,87.8)
-greenUpper = (45, 178+40 , 255)#greenUpper = (64, 255, 255) 
+greenUpper = (45, 178+40 , 255-55)#greenUpper = (64, 255, 255) 
 
 
 pts = deque(maxlen=args["buffer"])
@@ -54,14 +63,18 @@ while True:
 	# then we have reached the end of the video
     if frame is None:
         break
-
-    # crop some stuff
+    
+    """
+    # block some stuff in case unwanted orange color exist
     frame = frame[:,200:1100]
     y= 580
     for x in range(y):
         frame[x ,0:math.floor( (y-x)/1.6 ),:]=0
+    """
+    frame[0:500,0:180] = 0
 
-	# resize the frame, blur it, and convert it to the HSV
+	
+    # resize the frame, blur it, and convert it to the HSV
 	# color space
     frame = imutils.resize(frame, width=600)
     blurred = cv2.GaussianBlur(frame, (11, 11), 0)
@@ -99,7 +112,7 @@ while True:
             cv2.circle(frame, (int(x), int(y)), int(radius),
 				(0, 255, 255), 2)
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
-            cv2.putText(frame, str(speed), (10,30), cv2.FONT_HERSHEY_SIMPLEX , 1.0, (0,0,255), 1 )
+            cv2.putText(frame, str(round(speed,2)) + " m/s", (10,30), cv2.FONT_HERSHEY_SIMPLEX , 1.0, (0,0,255), 1 )
 	# update the points queue
     pts.appendleft(center)
 
@@ -115,7 +128,7 @@ while True:
         cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
 	# show the frame to our screen
     cv2.imshow("Frame", frame)
-    key = cv2.waitKey(100) & 0xFF
+    key = cv2.waitKey(auto) & 0xFF
 	# if the 'q' key is pressed, stop the loop
     if key == ord("q"):
         break
