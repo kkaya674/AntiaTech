@@ -15,7 +15,7 @@ import math
     frame = frame[:,180:1790]  # masanın ucundan fileye 130cm ölçüldü, bu da 1610 pixel'e denk geliyor
 """
 auto = 1
-m_pix_ratio = 1.3 / 1610  
+m_pix_ratio = 0.82 / 720  
 secBetweenFrames = 1 / 60 
 
 # return m/s
@@ -37,7 +37,7 @@ prevLocation=[0,0]
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
 # list of tracked points
-greenLower = (5, 142, 204-80)#greenLower = (29, 86, 6)
+greenLower = (5, 102, 204-80)#greenLower = (29, 86, 6)
 # (15,58,87.8)
 greenUpper = (45, 178+40 , 255-55)#greenUpper = (64, 255, 255) 
 
@@ -71,7 +71,7 @@ while True:
     for x in range(y):
         frame[x ,0:math.floor( (y-x)/1.6 ),:]=0
     """
-    frame[0:500,0:180] = 0
+    #frame[0:500,0:180] = 0
 
 	
     # resize the frame, blur it, and convert it to the HSV
@@ -113,6 +113,8 @@ while True:
 				(0, 255, 255), 2)
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
             cv2.putText(frame, str(round(speed,2)) + " m/s", (10,30), cv2.FONT_HERSHEY_SIMPLEX , 1.0, (0,0,255), 1 )
+            if (speed>1):
+                print(round(speed,2))
 	# update the points queue
     pts.appendleft(center)
 
