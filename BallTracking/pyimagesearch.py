@@ -14,8 +14,8 @@ import math
 """
     frame = frame[:,180:1790]  # masanın ucundan fileye 130cm ölçüldü, bu da 1610 pixel'e denk geliyor
 """
-auto = 1
-m_pix_ratio = 0.82 / 720  
+auto = 0
+m_pix_ratio = 1.30 / 1620  
 secBetweenFrames = 1 / 60 
 
 # return m/s
@@ -37,9 +37,10 @@ prevLocation=[0,0]
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
 # list of tracked points
-greenLower = (5, 102, 204-80)#greenLower = (29, 86, 6)
+greenLower = (8, 0, 200)        #greenLower = (29, 86, 6)
 # (15,58,87.8)
-greenUpper = (45, 178+40 , 255-55)#greenUpper = (64, 255, 255) 
+# 26/360 88/100  91/100 --> 316 , 327
+greenUpper = (40, 255, 255)     #greenUpper = (64, 255, 255) 
 
 
 pts = deque(maxlen=args["buffer"])
