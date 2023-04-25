@@ -1,5 +1,9 @@
 import machine
 import utime
+from machine import ADC, Pin
+
+
+stopPin = ADC(Pin(26))
 
 # Define motor pins
 IN1 = machine.Pin(0, machine.Pin.OUT)
@@ -32,7 +36,7 @@ DELAY = 0.002
 
 # Step motor function
 def run(steps):
-    k = 0
+    print("RUN")
     for i in range(steps):
         for j in range(8):
             IN1.value(SEQ[j][0])
@@ -40,11 +44,15 @@ def run(steps):
             IN3.value(SEQ[j][2])
             IN4.value(SEQ[j][3])
             utime.sleep(DELAY)
-            print(k)
-            k+=1
+        x = stopExecution()
+        if x == True:
+            break
+            
+            
         
            
 def reverseRun(steps):
+    print("Reverse Run")
     k = 0
     for i in range(steps):
         for j in range(8):
@@ -53,7 +61,21 @@ def reverseRun(steps):
             IN3.value(SEQ2[j][2])
             IN4.value(SEQ2[j][3])
             utime.sleep(DELAY)
-            print(k)
-            k+=1
+        x = stopExecution()
+        if x == True:
+            break
+
 # Test step motor
 
+def stopExecution():
+    
+    x = stopPin.read_u16()
+    print(x)
+    
+    if x<300:
+        return 1
+    else:
+        return 0
+
+
+        

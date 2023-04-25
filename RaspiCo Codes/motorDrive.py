@@ -11,7 +11,9 @@ en2 = PWM(Pin(9))
 
 
 
-def driveDC():
+def driveDC(speed1,speed2):
+    print(speed1)
+    print(speed2)
     en1.duty_u16(0)  # motor 1 disable
     en2.duty_u16(0)
 
@@ -22,8 +24,8 @@ def driveDC():
     m4.value(0)
 
 #25000 sayilari duty cycle parametresidir. Cycle = sayi/65535"
-    en1.duty_u16(25000)  # motor 1 enable at 50% duty cycle
-    en2.duty_u16(25000)
+    en1.duty_u16(int(speed1))  # motor 1 enable at 50% duty cycle
+    en2.duty_u16(int(speed2))
 
     
         
