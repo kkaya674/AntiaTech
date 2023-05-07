@@ -3,8 +3,8 @@ import utime
 
 m1 = Pin(5, Pin.OUT)
 m2 = Pin(4, Pin.OUT)##alt motor
-m3 = Pin(8,Pin.OUT)
-m4 = Pin(7,Pin.OUT)##üst motor
+m3 = Pin(7,Pin.OUT)
+m4 = Pin(8,Pin.OUT)##üst motor
 maxNum = 65535
 en1 = PWM(Pin(6))
 en2 = PWM(Pin(9))

@@ -4,8 +4,12 @@ import motorDrive
 import servoRun
 import servoRun2
 import utime
+
+
+
+
 delay = 0.001
-Speed = 35
+Speed = 60
 spinSpeed = Speed-15
 spinDir = "TOP"
 
@@ -39,25 +43,25 @@ def servo1():
         
 def servo2():
     
-    for i in range(110,90,-5):
+    for i in range(130,110,-5):
         print(i)
         servoRun2.servo_Angle(i)
-        utime.sleep(5)
+        utime.sleep(1)
         
 def servo3():
     servoRun.servo_Angle(80)
 def servo4():
-    servoRun2.servo_Angle(110)
+    servoRun2.servo_Angle(120)
     
 
 _thread.start_new_thread(reloader,())
 while True:
-    pass
+    
     barrel()
     #servo1()
-    servo2()
+    #servo2()
+    #servo3()
     
-    servo3()
-    #servo4()
-    #dwene
+    servo4()
+
                 
