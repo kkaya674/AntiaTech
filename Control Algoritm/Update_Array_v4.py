@@ -6,6 +6,7 @@ import speech_recognition as sr
 import _thread
 import time
 import serial
+import os,sys
 
 total_file_duration = 2
 chunk = 1024
@@ -13,7 +14,8 @@ sample_format = pyaudio.paInt16
 channels = 1
 fs = 44100
 seconds = 1
-filename = "commands.wav"
+os.chdir("/home/antia/Desktop/connection")
+filename = "/home/antia/Desktop/connection/commands.wav"
 r = sr.Recognizer()
 flag = 0
 frames = []
@@ -228,6 +230,10 @@ def myf(commands):
         global user_pref
         global no_repeat_flag
         global no_repeat_ct
+        global k
+        if k == 30:
+            break
+        os.remove(filename)
         wf = wave.open(filename, 'wb')
         wf.setnchannels(channels)
         wf.setsampwidth(p.get_sample_size(sample_format))
@@ -252,11 +258,11 @@ def myf(commands):
 
 
 def send_data(msg_list):
-    msg = "{}{}{}{}{}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4])
+    msg = "{}{}{}{}{} : {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],msg_list[5])
     print("Message {} is sent".format(msg))
     ser.write(msg.encode('utf-8'))
 
-
+k=0
 listener_thread = _thread.start_new_thread(listener, ())
 recognition_thread = _thread.start_new_thread(myf, (frames,))
 while True:
@@ -275,5 +281,14 @@ while True:
     print('To raspberry pico: ', kubi_pico)
     print('foreground feature: ', foreground_feature)
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    kubi_pico.append(foreground_feature)
     send_data(kubi_pico)
+    kubi_pico.pop()
+    k+=1
+    if k == 31:
+        k=0
+        recognition_thread = _thread.start_new_thread(myf, (frames,))
+
+    print(k)
     time.sleep(seconds)
+

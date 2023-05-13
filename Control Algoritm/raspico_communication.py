@@ -1,6 +1,6 @@
 
 
-def readData2():
+def readData():
     from sys import stdin
     from machine import Pin
     import _thread, uselect
