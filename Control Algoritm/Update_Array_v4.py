@@ -176,7 +176,7 @@ def update_data(command, data):
             no_repeat_flag = 1
             data[3] = data[3] - 1
             print('The verbal command: left')
-        elif (command in ['low level', 'no level', 'low-level']) and no_repeat_flag == 0:
+        elif (command in ['low level', 'no level', 'low-level', 'love level', 'long level']) and no_repeat_flag == 0:
             no_repeat_flag = 1
             print('The verbal command: low level')
             if foreground_feature == 'spin' and data[0] != -2:

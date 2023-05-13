@@ -1,6 +1,5 @@
 import random
 from scipy.stats import rv_discrete
-#cagri 
 comm = 'repetition practicing'
 
 user_pref = [0, 0, 0, 0, 0]
