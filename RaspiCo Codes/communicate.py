@@ -1,37 +1,25 @@
+from sys import stdin
+from machine import Pin
+import _thread, uselect
+from time import sleep
 
-
-def sendData():
-
-    import time
-    from machine import Pin, I2C
-
-    # Define the I2C pins for the sender
-    i2c_sda_pin = Pin(0)
-    i2c_scl_pin = Pin(1)
-
-    i2c = I2C(0, sda=i2c_sda_pin, scl=i2c_scl_pin, freq=100000)
-
-    while True:
-        i2c.writeto(0x12, b"Hello, Receiver!")
-        time.sleep(1)
-
-
+led = Pin("LED", Pin.OUT)
+led.toggle()
 
 
 def readData():
-    import time
-    from machine import Pin, I2C
-
-    # Define the I2C pins for the receiver
-    i2c_sda_pin = Pin(2)
-    i2c_scl_pin = Pin(3)
-
-    i2c = I2C(0, sda=i2c_sda_pin, scl=i2c_scl_pin, freq=100000)
-
-    while True:
-        if i2c.any():
-            received_data = i2c.readfrom(0x12, 16)
-            print("Received Data: ", received_data.decode("utf-8"))
-        time.sleep(1)
-
+    buffer = []
+    select_result = uselect.select([stdin], [], [], 0)
+    while select_result[0]:
+        char = stdin.read(1)
+        buffer.append(char)
+        select_result = uselect.select([stdin], [], [], 0)
+    
+    message = "".join(buffer) if buffer != [] else None
+    if message != None:
+        with open("dataRead.txt", "w") as f:
+            led.toggle()
+            print(message)
+            f.write(message)
+            return message
 
