@@ -156,15 +156,15 @@ def update_data(command, data):
         elif command in ['serving frequency']:
             foreground_feature = 'serving frequency'
             print('The verbal command: serving frequency')
-        elif command in ['adjust speed']:
+        elif command in ['adjust speed', 'it just beep']:
             foreground_feature = 'speed'
-            print('The verbal command: speed')
+            print('The verbal command: adjust speed')
         elif command in ['launching angle', 'launching Django']:
             foreground_feature = 'launching angle'
             print('The verbal command: launching angle')
         elif command in ['adjust spin', 'it just spin', 'just spin', 'adjustable spin']:
             foreground_feature = 'spin'
-            print('The verbal command: spin')
+            print('The verbal command: adjust spin')
         elif (command in ['right']) and data[3] != 2 and no_repeat_flag == 0:
             no_repeat_flag = 1
             data[3] = data[3] + 1
