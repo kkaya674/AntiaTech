@@ -5,6 +5,7 @@ import wave
 import speech_recognition as sr
 import _thread
 import time
+import serial
 
 total_file_duration = 2
 chunk = 1024
@@ -16,6 +17,15 @@ filename = "commands.wav"
 r = sr.Recognizer()
 flag = 0
 frames = []
+
+ser = serial.Serial(
+  port='/dev/ttyACM0', # Change this according to connection methods, e.g. /dev/ttyUSB0
+  baudrate = 115200,
+  parity=serial.PARITY_NONE,
+  stopbits=serial.STOPBITS_ONE,
+  bytesize=serial.EIGHTBITS,
+  timeout=1
+)
 
 p = pyaudio.PyAudio()
 stream = p.open(format=sample_format,
@@ -241,6 +251,12 @@ def myf(commands):
             no_repeat_ct = 0
 
 
+def send_data(msg_list):
+    msg = "{}{}{}{}{}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4])
+    print("Message {} is sent".format(msg))
+    ser.write(msg.encode('utf-8'))
+
+
 listener_thread = _thread.start_new_thread(listener, ())
 recognition_thread = _thread.start_new_thread(myf, (frames,))
 while True:
@@ -259,4 +275,5 @@ while True:
     print('To raspberry pico: ', kubi_pico)
     print('foreground feature: ', foreground_feature)
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    send_data(kubi_pico)
     time.sleep(seconds)
