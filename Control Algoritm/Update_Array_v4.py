@@ -258,7 +258,7 @@ def myf(commands):
 
 
 def send_data(msg_list):
-    msg = "{}{}{}{}{} : {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],msg_list[5])
+    msg = "{} {} {} {} {} {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],msg_list[5])
     print("Message {} is sent".format(msg))
     ser.write(msg.encode('utf-8'))
 
