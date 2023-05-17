@@ -102,8 +102,11 @@ def servo2():
 
 #_thread.start_new_thread(reloader,())
 while True:
-    #spin,freq,speed,direction,lau_angle = readCommand()
-    barrel("-2","2")
+    spin,freq,speed,direction,lau_angle = readCommand() ##datayi aliyor 
+    barrel(spin,speed) ##namlu spin ve speed bilgisini gönderek motor parametrelerini degistiriyor
+    stepMotor.speedWrite(freq) ##stepMotor ayri threadda sonsuz döngüde calistigi icin hiz degisimi file write-read metodu ile yapilacak
+    
+    
     
     
     

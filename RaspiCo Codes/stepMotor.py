@@ -32,11 +32,28 @@ SEQ2 = [[0,0,0,1],
         [1,0,0,1]]
         
 # Define motor speed
-DELAY = 0.002
+
+
+def speedCheck():
+    file = open("servoSpeed.txt","r")
+    speed = int(file.readlines()[0])
+    if freq == 0:
+        delay = 0.003
+    if freq == 1:
+        delay = 0.002
+    if freq == 2:
+        delay =0.001
+    return delay
+    
+def speedWrite(speed):
+    file = open("servoSpeed.txt","w")
+    file.write(speed)
+        
+
 
 # Step motor function
 def run(steps):
-    print("RUN")
+    DELAY = speedCheck()
     for i in range(steps):
         for j in range(8):
             IN1.value(SEQ[j][0])
@@ -53,6 +70,7 @@ def run(steps):
            
 def reverseRun(steps):
     print("Reverse Run")
+    DELAY = speedCheck()
     k = 0
     for i in range(steps):
         for j in range(8):
