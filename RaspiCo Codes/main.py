@@ -84,20 +84,38 @@ def reloader():
         
         
 
-def servo1():
-    for i in range(80,100,5):
-        servoRun.servo_Angle(i)
-        utime.sleep(0.2)
-        
-        
-        
+def servo1(direction):
+    mostLeft = 80
+    inc = 5
+    if direction == "-2":
+        servoRun.servo_Angle(mostLeft)
+    if direction == "-1":
+        servoRun.servo_Angle(mostLeft+inc)
+    if direction == "0":
+        servoRun.servo_Angle(mostLeft+inc*2)
+    if direction == "1":
+        servoRun.servo_Angle(mostLeft+inc*3)
+    if direction == "2":
+        servoRun.servo_Angle(mostLeft+inc*4)
         
     
-def servo2():
-    for i in range(130,110,-5):
-        print(i)
-        servoRun2.servo_Angle(i)
-        utime.sleep(1)
+def servo2(lau):
+    bottom = 90
+    inc = 7
+    if lau == "-2":
+        servoRun2.servo_Angle(bottom)
+    if lau == "-1":
+        servoRun2.servo_Angle(bottom+inc)
+        
+    if lau == "0":
+        servoRun2.servo_Angle(bottom+2*inc)
+        
+    if lau == "1":
+        servoRun2.servo_Angle(bottom+3*inc)
+        
+    if lau == "2":
+        servoRun2.servo_Angle(bottom+4*inc)
+
 
 
 #_thread.start_new_thread(reloader,())
@@ -105,7 +123,8 @@ while True:
     spin,freq,speed,direction,lau_angle = readCommand() ##datayi aliyor 
     barrel(spin,speed) ##namlu spin ve speed bilgisini gönderek motor parametrelerini degistiriyor
     stepMotor.speedWrite(freq) ##stepMotor ayri threadda sonsuz döngüde calistigi icin hiz degisimi file write-read metodu ile yapilacak
-    
+    servo1(direction)
+    servo2(lau_angle)
     
     
     

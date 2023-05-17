@@ -36,13 +36,14 @@ SEQ2 = [[0,0,0,1],
 
 def speedCheck():
     file = open("servoSpeed.txt","r")
-    speed = int(file.readlines()[0])
+    freq = int(file.readlines()[0])
     if freq == 0:
         delay = 0.003
     if freq == 1:
         delay = 0.002
     if freq == 2:
         delay =0.001
+   
     return delay
     
 def speedWrite(speed):
@@ -69,7 +70,7 @@ def run(steps):
         
            
 def reverseRun(steps):
-    print("Reverse Run")
+    #print("Reverse Run")
     DELAY = speedCheck()
     k = 0
     for i in range(steps):
@@ -88,12 +89,12 @@ def reverseRun(steps):
 def stopExecution():
     
     x = stopPin.read_u16()
-    print(x)
+    #print(x)
     
     if x<300:
         return 1
     else:
         return 0
 
-
+run(512)
         
