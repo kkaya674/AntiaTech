@@ -12,8 +12,7 @@ en2 = PWM(Pin(9))
 
 
 def driveDC(speed1,speed2):
-    print(speed1)
-    print(speed2)
+
     en1.duty_u16(0)  # motor 1 disable
     en2.duty_u16(0)
 

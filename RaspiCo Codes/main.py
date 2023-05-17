@@ -4,7 +4,8 @@ import motorDrive
 import servoRun
 import servoRun2
 import utime
-import communicate 
+import communicate
+
 
 
 """
@@ -17,11 +18,15 @@ spinDir = "TOP"
 
 
 
-def processData():
-    data = communicate.readData()
 
-    return data
-
+def readCommand():
+    msg = communicate.readData()
+    spin = msg[0]
+    freq = msg[1]
+    speed = msg[2]
+    direction = msg[3]
+    lau_angle = msg[4]
+    return spin,freq,speed,direction,lau_angle
 
 
 
@@ -31,12 +36,40 @@ def findAnalogOut(duty):
     output = duty*65000/100
     return output
 
-def barrel(spin,speed):
-    print("NOW Barrel")
-    if spinDir == "TOP":
-        motorDrive.driveDC(findAnalogOut(Speed),findAnalogOut(spinSpeed))
-    else:
-        motorDrive.driveDC(findAnalogOut(spinSpeed),findAnalogOut(Speed))
+def barrel(spinDir,speed):
+    ####Define Speed Parameters
+    if speed == "0":
+        mainSpeed = 35
+    if speed == "1":
+        mainSpeed = 45
+    if speed == "2":
+        mainSpeed = 55
+    
+    ####Define Speed w.r.t Spin 
+    
+    if spinDir == "-2":
+        spinSpeed = mainSpeed -20
+    if spinDir == "-1":
+        spinSpeed = mainSpeed -10
+    if spinDir == "0":
+        spinSpeed = mainSpeed
+    if spinDir == "1":
+        spinSpeed = mainSpeed
+        mainSpeed = spinSpeed-10
+    if spinDir == "2":
+        spinSpeed = mainSpeed
+        mainSpeed = spinSpeed -20
+    
+    
+    print(mainSpeed, spinSpeed)
+    motorDrive.driveDC(findAnalogOut(mainSpeed),findAnalogOut(spinSpeed))
+
+        
+        
+        
+        
+        
+        
 
 def reloader():
     while True:
@@ -46,34 +79,33 @@ def reloader():
         x = stepMotor.stopExecution()
         if x == True:
             break
+        
+        
+        
+        
 
 def servo1():
     for i in range(80,100,5):
         servoRun.servo_Angle(i)
         utime.sleep(0.2)
+        
+        
+        
+        
     
 def servo2():
     for i in range(130,110,-5):
         print(i)
         servoRun2.servo_Angle(i)
         utime.sleep(1)
-        
-def servo3(): ##rana code, horizontal
-    servoRun.servo_Angle(80)
-    
-def servo4(): ##basak code, vertical
-    servoRun2.servo_Angle(120)
-    
+
 
 #_thread.start_new_thread(reloader,())
-"""while True:
-    
-    #barrel()
-    #servo1()
-    #servo2()
-    #servo3()
-    #servo4()
-    """
 while True:
-    communicate.sendData("dme")
+    #spin,freq,speed,direction,lau_angle = readCommand()
+    barrel("-2","2")
+    
+    
+    
+    
     

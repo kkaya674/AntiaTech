@@ -1,6 +1,6 @@
 
 
-def readData2():
+def readData():
     from sys import stdin
     from machine import Pin
     import _thread, uselect
@@ -21,14 +21,9 @@ def readData2():
         if message != None:
             with open("in.txt", "w") as f:
                 led.toggle()
-                print(message)
+        
                 f.write(message)
-                return message
-i = 0
-while True:
-    print(i)
-    i+=1
-    readData()
-
+                msg = message.split(" ")
+                return msg
 
 
