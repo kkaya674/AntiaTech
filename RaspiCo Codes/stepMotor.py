@@ -6,10 +6,10 @@ from machine import ADC, Pin
 stopPin = ADC(Pin(26))
 
 # Define motor pins
-IN1 = machine.Pin(0, machine.Pin.OUT)
-IN2 = machine.Pin(1, machine.Pin.OUT)
-IN3 = machine.Pin(2, machine.Pin.OUT)
-IN4 = machine.Pin(3, machine.Pin.OUT)
+IN1 = machine.Pin(6, machine.Pin.OUT)
+IN2 = machine.Pin(7, machine.Pin.OUT)
+IN3 = machine.Pin(8, machine.Pin.OUT)
+IN4 = machine.Pin(9, machine.Pin.OUT)
 
 # Define motor sequence
 SEQ = [[1,0,0,1],
@@ -37,6 +37,7 @@ SEQ2 = [[0,0,0,1],
 def speedCheck():
     file = open("servoSpeed.txt","r")
     freq = int(file.readlines()[0])
+    file.close()
     if freq == 0:
         delay = 0.003
     if freq == 1:
@@ -49,6 +50,7 @@ def speedCheck():
 def speedWrite(speed):
     file = open("servoSpeed.txt","w")
     file.write(speed)
+    file.close()
         
 
 
@@ -96,5 +98,4 @@ def stopExecution():
     else:
         return 0
 
-run(512)
         

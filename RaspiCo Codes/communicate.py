@@ -6,8 +6,7 @@ def readData():
     import _thread, uselect
     from time import sleep
 
-    led = Pin("LED", Pin.OUT)
-    led.toggle()
+
 
     while True:
         buffer = []
@@ -20,7 +19,7 @@ def readData():
         message = "".join(buffer) if buffer != [] else None
         if message != None:
             with open("in.txt", "w") as f:
-                led.toggle()
+     
         
                 f.write(message)
                 msg = message.split(" ")
