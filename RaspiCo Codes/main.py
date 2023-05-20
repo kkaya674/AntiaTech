@@ -45,26 +45,26 @@ def barrel(spinDir,speed):
     if speed =="-1":
         mainSpeed = 0
     if speed == "0":
-        mainSpeed = 35
+        mainSpeed = 15
     if speed == "1":
-        mainSpeed = 45
+        mainSpeed = 15
     if speed == "2":
-        mainSpeed = 55
+        mainSpeed = 25
     
     ####Define Speed w.r.t Spin 
     if speed !="-1":
         if spinDir == "-2":
-            spinSpeed = mainSpeed -20
-        if spinDir == "-1":
             spinSpeed = mainSpeed -10
+        if spinDir == "-1":
+            spinSpeed = mainSpeed -5
         if spinDir == "0":
             spinSpeed = mainSpeed
         if spinDir == "1":
             spinSpeed = mainSpeed
-            mainSpeed = spinSpeed-10
+            mainSpeed = spinSpeed-5
         if spinDir == "2":
             spinSpeed = mainSpeed
-            mainSpeed = spinSpeed -20
+            mainSpeed = spinSpeed -10
     if speed == "-1" or speed =="0":
         spinSpeed = 0
         mainSpeed = 0
@@ -92,17 +92,17 @@ def reloader():
 
 def servo1(direction):
     print("now servo1")
-    mostLeft = 80
-    inc = 5
-    if direction == "-2":
+    mostLeft = 70
+    inc = 6
+    if direction == "2":
         servoRun.servo_Angle(mostLeft)
-    if direction == "-1":
+    if direction == "1":
         servoRun.servo_Angle(mostLeft+inc)
     if direction == "0":
         servoRun.servo_Angle(mostLeft+inc*2)
-    if direction == "1":
+    if direction == "-1":
         servoRun.servo_Angle(mostLeft+inc*3)
-    if direction == "2":
+    if direction == "-2":
         servoRun.servo_Angle(mostLeft+inc*4)
         
     
@@ -126,7 +126,7 @@ def servo2(lau):
 
 
 """
-#_thread.start_new_thread(reloader,())
+_thread.start_new_thread(reloader,())
 while True:
     spin,freq,speed,direction,lau_angle,mode = readCommand() ##datayi aliyor	
     print("{} {} {} {} {} {}".format(spin,freq,speed,direction,lau_angle,mode))
@@ -136,10 +136,13 @@ while True:
     servo2(lau_angle)"""
 
 
+_thread.start_new_thread(reloader,())
 while True:
-    #barrel("0","-1")
+    barrel("0","0")
     
+    #servoRun.servo_Angle(100)
     servo1("0")
+    #servo2("2")
     utime.sleep(1)
     
     
