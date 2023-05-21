@@ -67,7 +67,7 @@ foreground_feature = 'spin'
 seq_counter = 0
 random_vector = [random.randint(-2, 2), random.randint(0, 2), random.randint(0, 2), random.randint(-2, 2),
                  random.randint(-2, 2)]
-operating_mode = 0   # operating mode (0: rep-prac; 1: seq-prac; 2: game-mode)
+operating_mode = 1   # operating mode (0: rep-prac; 1: seq-prac; 2: game-mode)
 Is_random = 0   # randomness (0: regular; 1: random)
 user_pref[0] = 0  # spin (-2,-1: backspin; 0: no spin; 1,2: topspin)
 user_pref[1] = 1  # frequency (0,1,2)
@@ -326,7 +326,7 @@ def myf(commands):
 def send_data(msg_list):
     msg = "{} {} {} {} {} {} {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],
                                         msg_list[5], msg_list[6])
-    print("Message {} is sent".format(msg))
+    # print("Message {} is sent".format(msg))
     # ser.write(msg.encode('utf-8'))
 
 
@@ -358,7 +358,7 @@ def read_ultrasonic_sensor():
 
         distance = pulse_duration * 17150
         distance = round(distance, 2)
-
+        
         if distance < 20:
             ball_count += 1
 
