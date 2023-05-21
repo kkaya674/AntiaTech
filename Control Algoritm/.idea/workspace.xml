@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5370b994-9d69-4002-84ed-d1cb1b63cd3e" name="Changes" comment="" />
+    <list default="true" id="5370b994-9d69-4002-84ed-d1cb1b63cd3e" name="Changes" comment="some new commands added" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,7 +22,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/cagri_fynqq59/Desktop/AntiaTech/Control Algoritm",
+    "last_opened_file_path": "C:/Users/cagri_fynqq59/Desktop/pythonProject",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>

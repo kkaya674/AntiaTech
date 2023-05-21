@@ -258,7 +258,8 @@ def myf(commands):
 
 
 def send_data(msg_list):
-    msg = "{} {} {} {} {} {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],msg_list[5])
+    msg = "{} {} {} {} {} {} {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4], msg_list[5]
+                                        , msg_list[6])
     print("Message {} is sent".format(msg))
     ser.write(msg.encode('utf-8'))
 
@@ -282,11 +283,13 @@ while True:
     print('foreground feature: ', foreground_feature)
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     kubi_pico.append(foreground_feature)
+    kubi_pico.append(operating_mode)
     send_data(kubi_pico)
     kubi_pico.pop()
-    k+=1
+    kubi_pico.pop()
+    k += 1
     if k == 31:
-        k=0
+        k = 0
         recognition_thread = _thread.start_new_thread(myf, (frames,))
 
     print(k)
