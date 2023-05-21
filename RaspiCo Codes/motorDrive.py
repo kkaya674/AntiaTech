@@ -1,8 +1,8 @@
 from machine import Pin, PWM,ADC
 import utime
 
-m1 = Pin(2, Pin.OUT)
-m2 = Pin(4, Pin.OUT)##alt motor
+m1 = Pin(4, Pin.OUT)
+m2 = Pin(2, Pin.OUT)##alt motor
 m3 = Pin(10,Pin.OUT)
 m4 = Pin(11,Pin.OUT)##üst motor
 maxNum = 65535

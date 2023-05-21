@@ -1,5 +1,5 @@
 import utime
-from servo import Servo
+from servo2 import Servo
  
 s2 = Servo(21)       # Servo pin is connected to GP0
  
@@ -14,5 +14,3 @@ def servo_Angle(angle):
     s2.goto(round(servo_Map(angle,0,180,0,1024))) # Convert range value to angle value
    
    
-while True:
-    servo_Angle(80)

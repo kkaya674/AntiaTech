@@ -45,26 +45,28 @@ def barrel(spinDir,speed):
     if speed =="-1":
         mainSpeed = 0
     if speed == "0":
-        mainSpeed = 35
+        mainSpeed = 20
     if speed == "1":
-        mainSpeed = 45
+        mainSpeed = 20
     if speed == "2":
-        mainSpeed = 55
+        mainSpeed = 25
+    if speed ==  "5":
+        mainSpeed = 40
     
     ####Define Speed w.r.t Spin 
     if speed !="-1":
         if spinDir == "-2":
-            spinSpeed = mainSpeed -20
-        if spinDir == "-1":
             spinSpeed = mainSpeed -10
+        if spinDir == "-1":
+            spinSpeed = mainSpeed -5
         if spinDir == "0":
             spinSpeed = mainSpeed
         if spinDir == "1":
             spinSpeed = mainSpeed
-            mainSpeed = spinSpeed-10
+            mainSpeed = spinSpeed-5
         if spinDir == "2":
             spinSpeed = mainSpeed
-            mainSpeed = spinSpeed -20
+            mainSpeed = spinSpeed -10
     if speed == "-1" or speed =="0":
         spinSpeed = 0
         mainSpeed = 0
@@ -78,13 +80,12 @@ def barrel(spinDir,speed):
         
 
 def reloader():
+    utime.sleep(3)
     while True:
         print("NOW Reloader")
         stepMotor.run(512)
-        stepMotor.reverseRun(32)
-        x = stepMotor.stopExecution()
-        if x == True:
-            break
+        #stepMotor.reverseRun(32)
+
         
         
         
@@ -92,17 +93,17 @@ def reloader():
 
 def servo1(direction):
     print("now servo1")
-    mostLeft = 80
-    inc = 5
-    if direction == "-2":
+    mostLeft = 75
+    inc = 3
+    if direction == "2":
         servoRun.servo_Angle(mostLeft)
-    if direction == "-1":
+    if direction == "1":
         servoRun.servo_Angle(mostLeft+inc)
     if direction == "0":
         servoRun.servo_Angle(mostLeft+inc*2)
-    if direction == "1":
+    if direction == "-1":
         servoRun.servo_Angle(mostLeft+inc*3)
-    if direction == "2":
+    if direction == "-2":
         servoRun.servo_Angle(mostLeft+inc*4)
         
     
@@ -124,22 +125,35 @@ def servo2(lau):
     if lau == "2":
         servoRun2.servo_Angle(bottom+4*inc)
 
-
+k=0
 """
-#_thread.start_new_thread(reloader,())
+_thread.start_new_thread(reloader,())
 while True:
-    spin,freq,speed,direction,lau_angle,mode = readCommand() ##datayi aliyor	
+    spin,freq,speed,direction,lau_angle,mode = readCommand() ##datayi aliyor
     print("{} {} {} {} {} {}".format(spin,freq,speed,direction,lau_angle,mode))
     barrel(spin,speed) ##namlu spin ve speed bilgisini gönderek motor parametrelerini degistiriyor
     stepMotor.speedWrite(freq) ##stepMotor ayri threadda sonsuz döngüde calistigi icin hiz degisimi file write-read metodu ile yapilacak
     servo1(direction)
-    servo2(lau_angle)"""
-
-
-while True:
-    #barrel("0","-1")
+    servo2(lau_angle)
+    k+=1
+    if k%10== 0:
+        barrel("0","5")
+    utime.sleep(2)"""
     
-    servo1("0")
+
+
+_thread.start_new_thread(reloader,())
+k = 0
+while True:
+    
+    barrel("0","0")
+    
+    #servoRun.servo_Angle(100)
+    servo1("2")
+    #servo2("2")
+    k+=1
+    if k%10== 0:
+        barrel("0","5")
     utime.sleep(1)
     
     
