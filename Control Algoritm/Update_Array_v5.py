@@ -8,6 +8,8 @@ import time
 import serial
 import os
 import numpy as np
+import RPi.GPIO as GPIO
+import time
 
 total_file_duration = 2
 chunk = 1024
@@ -42,11 +44,19 @@ stream = p.open(
     input=True
 )
 
-comm = 'repetition practicing'
+comm = 'sequence practicing'
 last_comm = 'adjust speed'
 
 user_pref = [0, 0, 0, 0, 0]
 kubi_pico = [0, 0, 0, 0, 0]
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+TRIG = 23
+ECHO = 24
+GPIO.setup(TRIG, GPIO.OUT)
+GPIO.setup(ECHO, GPIO.IN)
+ball_count = 0
 
 # Default settings
 on_off_switch = 1
@@ -94,7 +104,6 @@ def perf_data_update():
     for value in num_of_balls_thrown:
         if value < 15:
             nope = 1
-    print(num_of_balls_thrown)
     if nope == 0:
         temp = 1 - (num_of_balls_returned / (num_of_balls_thrown+1))
         r_spin = rv_discrete(name='r_spin', values=([-2, -1, 0, 1, 2], temp[:5] / np.sum(temp[:5])))
@@ -178,6 +187,7 @@ def update_data(command, data):
     global foreground_feature
     global on_off_switch
     global no_repeat_flag
+    global sensor_thread_execute
 
     if command == 'start':
         on_off_switch = 1
@@ -220,16 +230,19 @@ def update_data(command, data):
             no_repeat_flag = 1
             data[3] = data[3] + 1
             print('The verbal command: right')
-        elif command in ['middle']:
-            data[3] = 0
-            print('The verbal command: middle')
+            if operating_mode == 0:
+                sensor_thread_execute = 1
         elif (command in ['left']) and data[3] != -2 and no_repeat_flag == 0:
             no_repeat_flag = 1
             data[3] = data[3] - 1
             print('The verbal command: left')
+            if operating_mode == 0:
+                sensor_thread_execute = 1
         elif (command in ['low level', 'no level', 'low-level']) and no_repeat_flag == 0:
             no_repeat_flag = 1
             print('The verbal command: low level')
+            if operating_mode == 0:
+                sensor_thread_execute = 1
             if foreground_feature == 'spin' and data[0] != -2:
                 data[0] = data[0] - 1
             elif foreground_feature == 'serving frequency':
@@ -242,6 +255,8 @@ def update_data(command, data):
                           'play devil', 'hi devil']) and no_repeat_flag == 0:
             no_repeat_flag = 1
             print('The verbal command: high level')
+            if operating_mode == 0:
+                sensor_thread_execute = 1
             if foreground_feature == 'spin' and data[0] != 2:
                 data[0] = data[0] + 1
             elif foreground_feature == 'serving frequency':
@@ -252,6 +267,8 @@ def update_data(command, data):
                 data[4] = data[4] + 1
         elif command in ['medium level']:
             print('The verbal command: medium level')
+            if operating_mode == 0:
+                sensor_thread_execute = 1
             if foreground_feature == 'spin':
                 data[0] = 0
             elif foreground_feature == 'serving frequency':
@@ -299,6 +316,41 @@ def send_data(msg_list):
     # ser.write(msg.encode('utf-8'))
 
 
+def read_ultrasonic_sensor():
+    global ball_count
+    global sensor_thread_running
+    pulse_end = 0
+    pulse_start = 0
+    while True:
+        if sensor_thread_execute == 1:
+            sensor_thread_running = 0
+            break
+
+        GPIO.output(TRIG, False)
+
+        time.sleep(0.5)
+
+        GPIO.output(TRIG, True)
+        time.sleep(0.00001)
+        GPIO.output(TRIG, False)
+
+        while GPIO.input(ECHO) == 0:
+            pulse_start = time.time()
+
+        while GPIO.input(ECHO) == 1:
+            pulse_end = time.time()
+
+        pulse_duration = pulse_end - pulse_start
+
+        distance = pulse_duration * 17150
+        distance = round(distance, 2)
+
+        if distance < 20:
+            ball_count += 1
+
+
+sensor_thread_execute = 0
+sensor_thread_running = 0
 k = 0
 listener_thread = _thread.start_new_thread(listener, ())
 recognition_thread = _thread.start_new_thread(myf, (frames,))
@@ -315,8 +367,20 @@ while True:
     if seq_counter == 4:
         seq_counter = 0
     if operating_mode == 0 and Is_random == 0:
-
+        if sensor_thread_running == 0:
+            _thread.start_new_thread(read_ultrasonic_sensor, ())
+            sensor_thread_running = 1
+        if sensor_thread_execute == 1:
+            num_of_balls_thrown[kubi_pico[0]+2] += ball_count
+            num_of_balls_thrown[kubi_pico[1]+5] += ball_count
+            num_of_balls_thrown[kubi_pico[2]+7] += ball_count
+            num_of_balls_thrown[kubi_pico[3]+13] += ball_count
+            num_of_balls_thrown[kubi_pico[4]+18] += ball_count
+            print(num_of_balls_thrown)
+            ball_count = 0
+            sensor_thread_execute = 0
         perf_data_update()
+    sensor_thread_execute = 0
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     print('To raspberry pico: ', kubi_pico)
     print('foreground feature: ', foreground_feature)
