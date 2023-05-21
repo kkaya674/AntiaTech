@@ -15,13 +15,15 @@ sample_format = pyaudio.paInt16
 channels = 1
 fs = 44100
 seconds = 1
-os.chdir("/home/antia/Desktop/connection")
-filename = "/home/antia/Desktop/connection/commands.wav"
+# os.chdir("/home/antia/Desktop/connection")
+# filename = "/home/antia/Desktop/connection/commands.wav"
+filename = "./commands.wav"
 r = sr.Recognizer()
 flag = 0
 frames = []
 
 
+"""
 ser = serial.Serial(
     port='/dev/ttyACM0',  # Change this according to connection methods, e.g. /dev/ttyUSB0
     baudrate=115200,
@@ -30,7 +32,7 @@ ser = serial.Serial(
     bytesize=serial.EIGHTBITS,
     timeout=1
 )
-
+"""
 p = pyaudio.PyAudio()
 stream = p.open(
     format=sample_format,
@@ -299,7 +301,7 @@ def send_data(msg_list):
     msg = "{} {} {} {} {} {} {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],
                                         msg_list[5], msg_list[6])
     print("Message {} is sent".format(msg))
-    ser.write(msg.encode('utf-8'))
+    #ser.write(msg.encode('utf-8'))
 
 
 k = 0
