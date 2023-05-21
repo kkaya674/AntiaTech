@@ -84,7 +84,6 @@ r_dir = rv_discrete(name='r_dir', values=([-2, -1, 0, 1, 2], dummy_perf_data_dir
 r_lau_ang = rv_discrete(name='r_lau_ang', values=([-2, -1, 0, 1, 2], dummy_perf_data_lau_ang))
 
 
-
 def perf_data_update():
     global r_spin
     global r_freq
