@@ -194,9 +194,9 @@ def update_data(command, data):
 
     if command == 'reset':
         reset_counter += 1
-        if reset_counter == 3:
-            np.save("perf_data_thrown_balls.npy", np.zeros(21))
-            np.save("perf_data_returned_balls.npy", np.zeros(21))
+        if reset_counter > 3:
+            os.remove("/home/antia/Desktop/connection/perf_data_returned_balls.npy")
+            os.remove("/home/antia/Desktop/connection/perf_data_thrown_balls.npy")
             reset_counter = 0
 
     if command == 'start':
