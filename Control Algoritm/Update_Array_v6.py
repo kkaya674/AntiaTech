@@ -522,4 +522,7 @@ while True:
         recognition_thread = _thread.start_new_thread(myf, (frames,))
     np.save("perf_data_thrown_balls.npy", num_of_balls_thrown)
     np.save("perf_data_returned_balls.npy", num_of_balls_returned)
-    time.sleep(seconds)
+    if operating_mode != 0:
+        time.sleep(3*seconds)
+    else:
+        time.sleep(seconds)
