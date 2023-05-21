@@ -17,9 +17,9 @@ sample_format = pyaudio.paInt16
 channels = 1
 fs = 44100
 seconds = 1
-# os.chdir("/home/antia/Desktop/connection")
-# filename = "/home/antia/Desktop/connection/commands.wav"
-filename = "./commands.wav"
+os.chdir("/home/antia/Desktop/connection")
+filename = "/home/antia/Desktop/connection/commands.wav"
+#filename = "./commands.wav"
 r = sr.Recognizer()
 flag = 0
 frames = []
