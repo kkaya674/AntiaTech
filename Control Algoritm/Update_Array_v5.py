@@ -93,6 +93,8 @@ r_speed = rv_discrete(name='r_speed', values=([1, 2, 3], dummy_perf_data_speed))
 r_dir = rv_discrete(name='r_dir', values=([-2, -1, 0, 1, 2], dummy_perf_data_dir))
 r_lau_ang = rv_discrete(name='r_lau_ang', values=([-2, -1, 0, 1, 2], dummy_perf_data_lau_ang))
 
+reset_counter = 0
+
 
 def perf_data_update():
     global r_spin
@@ -188,6 +190,14 @@ def update_data(command, data):
     global on_off_switch
     global no_repeat_flag
     global sensor_thread_execute
+    global reset_counter
+
+    if command == 'reset':
+        reset_counter += 1
+        if reset_counter == 3:
+            np.save("perf_data_thrown_balls.npy", np.zeros(21))
+            np.save("perf_data_returned_balls.npy", np.zeros(21))
+            reset_counter = 0
 
     if command == 'start':
         on_off_switch = 1
