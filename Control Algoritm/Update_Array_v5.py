@@ -65,21 +65,24 @@ user_pref[2] = 1  # speed (0,1,2,3)
 user_pref[3] = 0  # direction (-2,-1: left; 0: mid; 1,2: right)
 user_pref[4] = 0  # launching angle (-2,-1: down; 0: mid; 1,2: up)
 
-num_of_balls_thrown = np.zeros(21)  # 0-4:spin 5-7:freq 8-10:speed(1,2,3) 11-15:direction 16-20:launching_angle
-num_of_balls_returned = np.zeros(21)  # 0-4:spin 5-7:freq 8-10:speed(1,2,3) 11-15:direction 16-20:launching_angle
-dummy_perf_data_spin = [0.3, 0.2, 0.1, 0.2, 0.2]
+try:
+    num_of_balls_thrown = np.load("perf_data_thrown_balls.npy")
+    num_of_balls_returned = np.load("perf_data_returned_balls.npy")
+except FileNotFoundError:
+    num_of_balls_thrown = np.zeros(21)  # 0-4:spin 5-7:freq 8-10:speed(1,2,3) 11-15:direction 16-20:launching_angle
+    num_of_balls_returned = np.zeros(21)  # 0-4:spin 5-7:freq 8-10:speed(1,2,3) 11-15:direction 16-20:launching_angle
+
+dummy_perf_data_spin = [0.3, 0.25, 0.1, 0.15, 0.2]
 dummy_perf_data_freq = [0.2, 0.3, 0.5]
 dummy_perf_data_speed = [0.1, 0.4, 0.5]
-dummy_perf_data_dir = [0.2, 0.3, 0.1, 0.2, 0.2]
-dummy_perf_data_lau_ang = [0.1, 0.2, 0.3, 0.2, 0.2]
+dummy_perf_data_dir = [0.25, 0.1, 0.3, 0.1, 0.25]
+dummy_perf_data_lau_ang = [0.1, 0.2, 0.4, 0.2, 0.1]
 r_spin = rv_discrete(name='r_spin', values=([-2, -1, 0, 1, 2], dummy_perf_data_spin))
 r_freq = rv_discrete(name='r_freq', values=([0, 1, 2], dummy_perf_data_freq))
 r_speed = rv_discrete(name='r_speed', values=([1, 2, 3], dummy_perf_data_speed))
 r_dir = rv_discrete(name='r_dir', values=([-2, -1, 0, 1, 2], dummy_perf_data_dir))
 r_lau_ang = rv_discrete(name='r_lau_ang', values=([-2, -1, 0, 1, 2], dummy_perf_data_lau_ang))
 
-ball_launched_flag = 0
-ball_detected_flag = 0
 
 
 def perf_data_update():
@@ -94,13 +97,12 @@ def perf_data_update():
             nope = 1
     print(num_of_balls_thrown)
     if nope == 0:
-        temp = num_of_balls_returned / num_of_balls_thrown
-        temp = temp / np.sum(temp)
-        r_spin = rv_discrete(name='r_spin', values=([-2, -1, 0, 1, 2], temp[:4]))
-        r_freq = rv_discrete(name='r_freq', values=([0, 1, 2], temp[4:7]))
-        r_speed = rv_discrete(name='r_speed', values=([1, 2, 3], temp[7:10]))
-        r_dir = rv_discrete(name='r_dir', values=([-2, -1, 0, 1, 2], temp[10:15]))
-        r_lau_ang = rv_discrete(name='r_lau_ang', values=([-2, -1, 0, 1, 2], temp[15:20]))
+        temp = 1 - (num_of_balls_returned / (num_of_balls_thrown+1))
+        r_spin = rv_discrete(name='r_spin', values=([-2, -1, 0, 1, 2], temp[:5] / np.sum(temp[:5])))
+        r_freq = rv_discrete(name='r_freq', values=([0, 1, 2], temp[5:8] / np.sum(temp[5:8])))
+        r_speed = rv_discrete(name='r_speed', values=([1, 2, 3], temp[8:11] / np.sum(temp[8:11])))
+        r_dir = rv_discrete(name='r_dir', values=([-2, -1, 0, 1, 2], temp[11:16] / np.sum(temp[11:16])))
+        r_lau_ang = rv_discrete(name='r_lau_ang', values=([-2, -1, 0, 1, 2], temp[16:21] / np.sum(temp[16:21])))
     else:
         r_spin = rv_discrete(name='r_spin', values=([-2, -1, 0, 1, 2], dummy_perf_data_spin))
         r_freq = rv_discrete(name='r_freq', values=([0, 1, 2], dummy_perf_data_freq))
@@ -123,12 +125,6 @@ def motor_parameters(op_mode, rand, data, counter, vec_random, last_data_pico, s
         if op_mode == 0:  # repetition practicing
             if rand == 0:  # regular repetition practicing
                 data_pico = data
-                if ball_launched_flag == 1 & data[2] != 0:
-                    num_of_balls_thrown[data[0]+2] += 1
-                    num_of_balls_thrown[data[1]+5] += 1
-                    num_of_balls_thrown[data[2]+7] += 1
-                    num_of_balls_thrown[data[3]+13] += 1
-                    num_of_balls_thrown[data[4]+18] += 1
             else:  # random repetition practicing
                 data_pico = vec_random
 
@@ -301,7 +297,7 @@ def send_data(msg_list):
     msg = "{} {} {} {} {} {} {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],
                                         msg_list[5], msg_list[6])
     print("Message {} is sent".format(msg))
-    #ser.write(msg.encode('utf-8'))
+    # ser.write(msg.encode('utf-8'))
 
 
 k = 0
@@ -320,6 +316,7 @@ while True:
     if seq_counter == 4:
         seq_counter = 0
     if operating_mode == 0 and Is_random == 0:
+
         perf_data_update()
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     print('To raspberry pico: ', kubi_pico)
@@ -334,6 +331,6 @@ while True:
     if k == 31:
         k = 0
         recognition_thread = _thread.start_new_thread(myf, (frames,))
-
-    print(k)
+    np.save("perf_data_thrown_balls.npy", num_of_balls_thrown)
+    np.save("perf_data_returned_balls.npy", num_of_balls_returned)
     time.sleep(seconds)
