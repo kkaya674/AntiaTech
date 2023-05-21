@@ -191,12 +191,16 @@ def update_data(command, data):
     global no_repeat_flag
     global sensor_thread_execute
     global reset_counter
+    global num_of_balls_thrown
+    global num_of_balls_returned
 
     if command == 'reset':
         reset_counter += 1
-        if reset_counter > 3:
+        if reset_counter >= 3:
             os.remove("/home/antia/Desktop/connection/perf_data_returned_balls.npy")
             os.remove("/home/antia/Desktop/connection/perf_data_thrown_balls.npy")
+            num_of_balls_thrown = np.zeros(21)
+            num_of_balls_returned = np.zeros(21)
             reset_counter = 0
 
     if command == 'start':
