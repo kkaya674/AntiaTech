@@ -6,7 +6,7 @@ import speech_recognition as sr
 import _thread
 import time
 import serial
-import os,sys
+import os
 
 total_file_duration = 2
 chunk = 1024
@@ -21,26 +21,28 @@ flag = 0
 frames = []
 
 ser = serial.Serial(
-  port='/dev/ttyACM0', # Change this according to connection methods, e.g. /dev/ttyUSB0
-  baudrate = 115200,
-  parity=serial.PARITY_NONE,
-  stopbits=serial.STOPBITS_ONE,
-  bytesize=serial.EIGHTBITS,
-  timeout=1
+    port='/dev/ttyACM0',  # Change this according to connection methods, e.g. /dev/ttyUSB0
+    baudrate=115200,
+    parity=serial.PARITY_NONE,
+    stopbits=serial.STOPBITS_ONE,
+    bytesize=serial.EIGHTBITS,
+    timeout=1
 )
 
 p = pyaudio.PyAudio()
-stream = p.open(format=sample_format,
-                channels=channels,
-                rate=fs,
-                frames_per_buffer=chunk,
-                input=True)
+stream = p.open(
+    format=sample_format,
+    channels=channels,
+    rate=fs,
+    frames_per_buffer=chunk,
+    input=True
+)
 
 comm = 'repetition practicing'
 last_comm = 'adjust speed'
 
 user_pref = [0, 0, 0, 0, 0]
-kubi_pico = user_pref
+kubi_pico = [0, 0, 0, 0, 0]
 
 # Default settings
 on_off_switch = 1
@@ -258,11 +260,13 @@ def myf(commands):
 
 
 def send_data(msg_list):
-    msg = "{} {} {} {} {} {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],msg_list[5])
+    msg = "{} {} {} {} {} {} {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],
+                                        msg_list[5], msg_list[6])
     print("Message {} is sent".format(msg))
     ser.write(msg.encode('utf-8'))
 
-k=0
+
+k = 0
 listener_thread = _thread.start_new_thread(listener, ())
 recognition_thread = _thread.start_new_thread(myf, (frames,))
 while True:
@@ -282,13 +286,14 @@ while True:
     print('foreground feature: ', foreground_feature)
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     kubi_pico.append(foreground_feature)
+    kubi_pico.append(operating_mode)
     send_data(kubi_pico)
     kubi_pico.pop()
-    k+=1
+    kubi_pico.pop()
+    k += 1
     if k == 31:
-        k=0
+        k = 0
         recognition_thread = _thread.start_new_thread(myf, (frames,))
 
     print(k)
     time.sleep(seconds)
-
