@@ -6,6 +6,7 @@ import speech_recognition as sr
 import _thread
 import time
 import serial
+import os
 import numpy as np
 
 total_file_duration = 2
@@ -14,7 +15,8 @@ sample_format = pyaudio.paInt16
 channels = 1
 fs = 44100
 seconds = 1
-filename = "commands.wav"
+os.chdir("/home/antia/Desktop/connection")
+filename = "/home/antia/Desktop/connection/commands.wav"
 r = sr.Recognizer()
 flag = 0
 frames = []
