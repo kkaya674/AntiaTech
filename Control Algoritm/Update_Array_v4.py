@@ -21,20 +21,22 @@ flag = 0
 frames = []
 
 ser = serial.Serial(
-  port='/dev/ttyACM0',  # Change this according to connection methods, e.g. /dev/ttyUSB0
-  baudrate=115200,
-  parity=serial.PARITY_NONE,
-  stopbits=serial.STOPBITS_ONE,
-  bytesize=serial.EIGHTBITS,
-  timeout=1
+    port='/dev/ttyACM0',  # Change this according to connection methods, e.g. /dev/ttyUSB0
+    baudrate=115200,
+    parity=serial.PARITY_NONE,
+    stopbits=serial.STOPBITS_ONE,
+    bytesize=serial.EIGHTBITS,
+    timeout=1
 )
 
 p = pyaudio.PyAudio()
-stream = p.open(format=sample_format,
-                channels=channels,
-                rate=fs,
-                frames_per_buffer=chunk,
-                input=True)
+stream = p.open(
+    format=sample_format,
+    channels=channels,
+    rate=fs,
+    frames_per_buffer=chunk,
+    input=True
+)
 
 comm = 'repetition practicing'
 last_comm = 'adjust speed'
