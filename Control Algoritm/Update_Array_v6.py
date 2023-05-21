@@ -4,12 +4,22 @@ import pyaudio
 import wave
 import speech_recognition as sr
 import _thread
-import time
 import serial
 import os
 import numpy as np
 import RPi.GPIO as GPIO
 import time
+import socket
+import threading
+
+imageFlag = 0
+vibrationFlag = 0
+ser_vibration = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+ser_vibration.reset_input_buffer()
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_address = ('169.254.4.12', 6002)
+server_socket.bind(server_address)
+num_synch = 0
 
 total_file_duration = 2
 chunk = 1024
@@ -91,6 +101,44 @@ r_dir = rv_discrete(name='r_dir', values=([-2, -1, 0, 1, 2], dummy_perf_data_dir
 r_lau_ang = rv_discrete(name='r_lau_ang', values=([-2, -1, 0, 1, 2], dummy_perf_data_lau_ang))
 
 reset_counter = 0
+
+
+def image_reset():
+    global imageFlag
+    imageFlag = 0
+    print("image timer up and image flag cleared")
+
+
+def vibration_reset():
+    global vibrationFlag
+    vibrationFlag = 0
+    print("vibration timer up and vibration flag cleared")
+
+
+def vibrationTimer():
+    vibrationTimer = threading.Timer(1, vibration_reset)
+    vibrationTimer.start()
+
+
+def imageTimer():
+    imageTimer = threading.Timer(1, image_reset)
+    imageTimer.start()
+
+
+def checkSync():
+    global num_synch
+    global imageFlag
+    global vibrationFlag
+    if imageFlag and vibrationFlag:
+        print("SYNCHRONIZATION!!!")
+        if operating_mode == 0 and Is_random == 0:
+            num_synch += 1
+    else:
+        if imageFlag:
+            print("ONLY IMAGE!!!")
+        else:
+            if vibrationFlag:
+                print("ONLY VIBRATION!!!")
 
 
 def perf_data_update():
@@ -360,11 +408,71 @@ def read_ultrasonic_sensor():
             ball_count += 1
 
 
+def vibration_image():
+    global vibrationFlag
+    global imageFlag
+
+    while True:
+        # Listen for incoming connections (maximum of 1 connection)
+        server_socket.listen(1)
+        print("Waiting for a connection...")
+
+        # Accept a client connection
+        client_socket, client_address = server_socket.accept()
+        print("Client connected:", client_address)
+
+        # Set the socket to non-blocking mode
+        client_socket.setblocking(False)
+
+        while True:
+            try:
+                # Receive data from the client
+                data = client_socket.recv(1024)
+
+                # Check if data was received
+                if data:
+                    # Process the received data
+                    data = data.decode('utf-8')
+                    print("Received data:", data)
+                    imageFlag = 1
+                    imageTimer()
+                    checkSync()
+
+                else:
+                    # No data received, client has disconnected
+                    print("Client disconnected")
+                    break
+            except socket.error as e:
+                # No data available to be read
+                error_code = e.args[0]
+                if error_code == socket.errno.EWOULDBLOCK:
+                    # Handle the absence of data gracefully
+                    # ...
+                    pass
+
+            # Continue with other tasks
+            # ...
+
+            if ser.in_waiting > 0:
+                vibrationFlag = 1
+                vibrationTimer()
+                line = ser.readline().decode('utf-8').rstrip()
+                print(line)
+                checkSync()
+
+        # Close the client socket
+        client_socket.close()
+
+    # Close the server socket
+    server_socket.close()
+
+
 sensor_thread_execute = 0
 sensor_thread_running = 0
 k = 0
 listener_thread = _thread.start_new_thread(listener, ())
 recognition_thread = _thread.start_new_thread(myf, (frames,))
+vibration_image_thread = _thread.start_new_thread(vibration_image, ())
 while True:
     if operating_mode == 1:
         seq_counter += 1
@@ -387,7 +495,14 @@ while True:
             num_of_balls_thrown[kubi_pico[2]+7] += ball_count
             num_of_balls_thrown[kubi_pico[3]+13] += ball_count
             num_of_balls_thrown[kubi_pico[4]+18] += ball_count
-            print(num_of_balls_thrown)
+            num_of_balls_returned[kubi_pico[0] + 2] += num_synch
+            num_of_balls_returned[kubi_pico[1] + 5] += num_synch
+            num_of_balls_returned[kubi_pico[2] + 7] += num_synch
+            num_of_balls_returned[kubi_pico[3] + 13] += num_synch
+            num_of_balls_returned[kubi_pico[4] + 18] += num_synch
+            print("returned ball number:", num_of_balls_returned)
+            print("thrown ball number", num_of_balls_thrown)
+            num_synch = 0
             ball_count = 0
             sensor_thread_execute = 0
         perf_data_update()
