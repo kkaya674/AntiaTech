@@ -279,7 +279,7 @@ def update_data(command, data):
         elif command in ['adjust speed', 'speed']:
             foreground_feature = 'speed'
             print('The verbal command: speed')
-        elif command in ['launching angle', 'launching Django', 'launching', 'angle']:
+        elif command in ['launching angle', 'launching Django', 'launch in Django', 'launching', 'angle']:
             foreground_feature = 'launching angle'
             print('The verbal command: launching angle')
         elif command in ['adjust spin', 'it just spin', 'just spin', 'adjustable spin', 'adjust spins']:
@@ -297,7 +297,7 @@ def update_data(command, data):
             print('The verbal command: left')
             if operating_mode == 0:
                 sensor_thread_execute = 1
-        elif (command in ['low level', 'long level' 'no level', 'low-level', 'low']) and no_repeat_flag == 0:
+        elif (command in ['low level', 'long level' 'no level', 'low-level', 'low', 'low levels']) and no_repeat_flag == 0:
             no_repeat_flag = 1
             print('The verbal command: low level')
             if operating_mode == 0:
@@ -311,7 +311,7 @@ def update_data(command, data):
             elif foreground_feature == 'launching angle' and data[4] != -2:
                 data[4] = data[4] - 1
         elif (command in ['high level', 'hi level', 'hi Neville', 'high-level', 'volume level', 'I never',
-                          'play devil', 'hi devil', 'high', 'ilevel']) and no_repeat_flag == 0:
+                          'play devil', 'hi devil', 'high', 'ilevel', 'high levels']) and no_repeat_flag == 0:
             no_repeat_flag = 1
             print('The verbal command: high level')
             if operating_mode == 0:
