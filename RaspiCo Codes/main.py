@@ -16,7 +16,7 @@ spinSpeed = Speed-15
 spinDir = "TOP"
 """
 
-
+freq_changed_flag = 0
 
 
 def readCommand():
@@ -28,8 +28,9 @@ def readCommand():
     speed = msg[2]
     direction = msg[3]
     lau_angle = msg[4]
-    mode = msg[5]
-    return spin,freq,speed,direction,lau_angle,mode
+    foreGround = msg[5]
+    mode = msg[6]
+    return spin,freq,speed,direction,lau_angle,foreGround,mode
 
 
 
@@ -50,6 +51,8 @@ def barrel(spinDir,speed):
         mainSpeed = 20
     if speed == "2":
         mainSpeed = 25
+    if speed =="3":
+        mainSpeed = 30
     if speed ==  "5":
         mainSpeed = 40
     
@@ -79,11 +82,12 @@ def barrel(spinDir,speed):
         
         
 
-def reloader():
-    utime.sleep(3)
+def reloader(level):
+    global freq_changed_flag
     while True:
-        print("NOW Reloader")
-        stepMotor.run(512)
+        if freq_changed_flag == 1:
+            break
+        stepMotor.run(52, level,freq_changed_flag)
         #stepMotor.reverseRun(32)
 
         
@@ -126,22 +130,29 @@ def servo2(lau):
         servoRun2.servo_Angle(bottom+4*inc)
 
 k=0
-"""
-_thread.start_new_thread(reloader,())
+prev_freq ="1"
+_thread.start_new_thread(reloader,(1, ))
 while True:
-    spin,freq,speed,direction,lau_angle,mode = readCommand() ##datayi aliyor
-    print("{} {} {} {} {} {}".format(spin,freq,speed,direction,lau_angle,mode))
+    spin,freq,speed,direction,lau_angle,foreGround,mode = readCommand() ##datayi aliyor
+    print("{} {} {} {} {} {} mode : {}".format(spin,freq,speed,direction,lau_angle,foreGround,mode))
     barrel(spin,speed) ##namlu spin ve speed bilgisini gönderek motor parametrelerini degistiriyor
-    stepMotor.speedWrite(freq) ##stepMotor ayri threadda sonsuz döngüde calistigi icin hiz degisimi file write-read metodu ile yapilacak
+    #stepMotor.speedWrite(freq) ##stepMotor ayri threadda sonsuz döngüde calistigi icin hiz degisimi file write-read metodu ile yapilacak
     servo1(direction)
     servo2(lau_angle)
+    if freq != prev_freq:
+        freq_changed_flag = 1
+        utime.sleep(2)
+        _thread.start_new_thread(reloader,(int(freq),))
+        prev_freq = freq
+        freq_changed_flag=0
+    prev_freq = freq
     k+=1
     if k%10== 0:
         barrel("0","5")
-    utime.sleep(2)"""
+    utime.sleep(2)
     
 
-
+"""
 _thread.start_new_thread(reloader,())
 k = 0
 while True:
@@ -154,7 +165,7 @@ while True:
     k+=1
     if k%10== 0:
         barrel("0","5")
-    utime.sleep(1)
+    utime.sleep(1)"""
     
     
     

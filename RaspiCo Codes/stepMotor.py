@@ -2,7 +2,7 @@ import machine
 import utime
 from machine import ADC, Pin
 
-DELAY = 0.004
+#DELAY = 0.004
 stopPin = ADC(Pin(26))
 
 # Define motor pins
@@ -33,7 +33,7 @@ SEQ2 = [[0,0,0,1],
         
 # Define motor speed
 
-
+"""
 def speedCheck():
     file = open("servoSpeed.txt","r")
     freq = int(file.readlines()[0])
@@ -51,14 +51,26 @@ def speedWrite(speed):
     file = open("servoSpeed.txt","w")
     file.write(speed)
     file.close()
-        
+"""        
 
 
 # Step motor function
-def run(steps):
-    #DELAY = speedCheck()
+def run(steps,freq,flag):
+    if freq == 0:
+        DELAY = 0.005
+    if freq == 1:
+        DELAY = 0.003
+    if freq == 2:
+        DELAY =0.002
+   
+    
+    print(DELAY)
     for i in range(steps):
+        if flag == 1:
+            break
         for j in range(8):
+            if flag == 1:
+                break
             IN1.value(SEQ[j][0])
             IN2.value(SEQ[j][1])
             IN3.value(SEQ[j][2])
