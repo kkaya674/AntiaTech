@@ -12,5 +12,4 @@ def servo_Angle(angle):
     if angle > 180:
         angle = 180
     s2.goto(round(servo_Map(angle,0,180,0,1024))) # Convert range value to angle value
-   
-   
+
