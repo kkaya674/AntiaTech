@@ -7,18 +7,18 @@ import _thread
 import serial
 import os
 import numpy as np
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 import time
 import socket
 import threading
 
 imageFlag = 0
 vibrationFlag = 0
-ser_vibration = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
-ser_vibration.reset_input_buffer()
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_address = ('169.254.4.12', 6002)
-server_socket.bind(server_address)
+# ser_vibration = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+# ser_vibration.reset_input_buffer()
+# server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# server_address = ('169.254.4.12', 6002)
+# server_socket.bind(server_address)
 num_synch = 0
 
 total_file_duration = 2
@@ -27,13 +27,14 @@ sample_format = pyaudio.paInt16
 channels = 1
 fs = 44100
 seconds = 1
-os.chdir("/home/antia/Desktop/connection")
-filename = "/home/antia/Desktop/connection/commands.wav"
+# os.chdir("/home/antia/Desktop/connection")
+# filename = "/home/antia/Desktop/connection/commands.wav"
+filename = "commands.wav"
 r = sr.Recognizer()
 flag = 0
 frames = []
 
-
+"""
 ser = serial.Serial(
     port='/dev/ttyACM0',  # Change this according to connection methods, e.g. /dev/ttyUSB0
     baudrate=115200,
@@ -42,6 +43,7 @@ ser = serial.Serial(
     bytesize=serial.EIGHTBITS,
     timeout=1
 )
+"""
 p = pyaudio.PyAudio()
 stream = p.open(
     format=sample_format,
@@ -57,6 +59,7 @@ last_comm = 'adjust speed'
 user_pref = [0, 0, 0, 0, 0]
 kubi_pico = [0, 0, 0, 0, 0]
 
+"""
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 TRIG = 23
@@ -64,9 +67,10 @@ ECHO = 24
 GPIO.setup(TRIG, GPIO.OUT)
 GPIO.setup(ECHO, GPIO.IN)
 ball_count = 0
+"""
 
 # Default settings
-on_off_switch = 1
+on_off_switch = 0
 no_repeat_flag = 0
 no_repeat_ct = 0
 mode_changed = 0
@@ -74,7 +78,7 @@ foreground_feature = 'spin'
 seq_counter = 0
 random_vector = [random.randint(-2, 2), random.randint(0, 2), random.randint(0, 2), random.randint(-2, 2),
                  random.randint(-2, 2)]
-operating_mode = 1   # operating mode (0: rep-prac; 1: seq-prac; 2: game-mode)
+operating_mode = 0   # operating mode (0: rep-prac; 1: seq-prac; 2: game-mode)
 Is_random = 0   # randomness (0: regular; 1: random)
 user_pref[0] = 0  # spin (-2,-1: backspin; 0: no spin; 1,2: topspin)
 user_pref[1] = 1  # frequency (0,1,2)
@@ -220,10 +224,9 @@ def motor_parameters(op_mode, rand, data, counter, vec_random, last_data_pico, s
             else:
                 data_pico = last_data_pico
                 data_pico[4] = int(r_lau_ang.rvs(size=1))
-
-        return data_pico
     else:
-        pass
+        data_pico = [0] * 5
+    return data_pico
 
 
 def update_data(command, data):
@@ -372,9 +375,9 @@ def send_data(msg_list):
     msg = "{} {} {} {} {} {} {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],
                                         msg_list[5], msg_list[6])
     print("Message {} is sent".format(msg))
-    ser.write(msg.encode('utf-8'))
+    # ser.write(msg.encode('utf-8'))
 
-
+"""
 def read_ultrasonic_sensor():
     global ball_count
     global sensor_thread_running
@@ -466,13 +469,14 @@ def vibration_image():
     # Close the server socket
     server_socket.close()
 
-
+"""
 sensor_thread_execute = 0
 sensor_thread_running = 0
 k = 0
+ball_count = 0
 listener_thread = _thread.start_new_thread(listener, ())
 recognition_thread = _thread.start_new_thread(myf, (frames,))
-vibration_image_thread = _thread.start_new_thread(vibration_image, ())
+# vibration_image_thread = _thread.start_new_thread(vibration_image, ())
 while True:
     if operating_mode == 1:
         seq_counter += 1
@@ -487,7 +491,7 @@ while True:
         seq_counter = 0
     if operating_mode == 0 and Is_random == 0:
         if sensor_thread_running == 0:
-            _thread.start_new_thread(read_ultrasonic_sensor, ())
+            # _thread.start_new_thread(read_ultrasonic_sensor, ())
             sensor_thread_running = 1
         if sensor_thread_execute == 1:
             num_of_balls_thrown[kubi_pico[0]+2] += ball_count
