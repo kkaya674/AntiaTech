@@ -20,6 +20,7 @@ vibrationFlag = 0
 # server_address = ('169.254.4.12', 6002)
 # server_socket.bind(server_address)
 num_synch = 0
+LED = 0
 
 total_file_duration = 2
 chunk = 1024
@@ -240,6 +241,7 @@ def update_data(command, data):
     global reset_counter
     global num_of_balls_thrown
     global num_of_balls_returned
+    global LED
 
     if command == 'reset':
         reset_counter += 1
@@ -250,57 +252,73 @@ def update_data(command, data):
             num_of_balls_returned = np.zeros(21)
             reset_counter = 0
 
-    if command == 'start':
+    if command in ['start', 'talked', 'Park', 'part']:
         on_off_switch = 1
+        LED = 1
+        print('The verbal command: start')
     elif command == 'stop':
         on_off_switch = 0
+        LED = 1
+        print('The verbal command: stop')
 
     if on_off_switch == 1:
         if command in ['repetition practicing', 'petition practicing', 'repetition']:
             operating_mode = 0
             mode_changed = 1
+            LED = 1
             print('The verbal command: repetition practicing')
         elif command in ['sequence practicing', 'sequins practicing', 'sequence']:
             operating_mode = 1
             mode_changed = 1
+            LED = 1
             print('The verbal command: sequence practicing')
         elif command in ['gamemode', 'Gamo', 'game mode']:
             operating_mode = 2
             mode_changed = 1
+            LED = 1
             print('The verbal command: game mode')
         elif command in ['random']:
             Is_random = 1
+            LED = 1
             mode_changed = 1
             print('The verbal command: random')
         elif command in ['regular']:
             Is_random = 0
+            LED = 1
             print('The verbal command: regular')
         elif command in ['serving frequency', 'serving', 'frequency']:
             foreground_feature = 'serving frequency'
+            LED = 1
             print('The verbal command: serving frequency')
         elif command in ['adjust speed', 'speed']:
             foreground_feature = 'speed'
+            LED = 1
             print('The verbal command: speed')
         elif command in ['launching angle', 'launching Django']:
             foreground_feature = 'launching angle'
+            LED = 1
             print('The verbal command: launching angle')
         elif command in ['adjust spin', 'it just spin', 'just spin', 'adjustable spin']:
             foreground_feature = 'spin'
+            LED = 1
             print('The verbal command: spin')
         elif (command in ['right']) and data[3] != 2 and no_repeat_flag == 0:
             no_repeat_flag = 1
             data[3] = data[3] + 1
+            LED = 1
             print('The verbal command: right')
             if operating_mode == 0:
                 sensor_thread_execute = 1
         elif (command in ['left']) and data[3] != -2 and no_repeat_flag == 0:
             no_repeat_flag = 1
             data[3] = data[3] - 1
+            LED = 1
             print('The verbal command: left')
             if operating_mode == 0:
                 sensor_thread_execute = 1
         elif (command in ['low level', 'no level', 'low-level']) and no_repeat_flag == 0:
             no_repeat_flag = 1
+            LED = 1
             print('The verbal command: low level')
             if operating_mode == 0:
                 sensor_thread_execute = 1
@@ -315,6 +333,7 @@ def update_data(command, data):
         elif (command in ['high level', 'hi level', 'hi Neville', 'high-level', 'volume level', 'I never',
                           'play devil', 'hi devil']) and no_repeat_flag == 0:
             no_repeat_flag = 1
+            LED = 1
             print('The verbal command: high level')
             if operating_mode == 0:
                 sensor_thread_execute = 1
@@ -328,6 +347,7 @@ def update_data(command, data):
                 data[4] = data[4] + 1
         elif command in ['medium level']:
             print('The verbal command: medium level')
+            LED = 1
             if operating_mode == 0:
                 sensor_thread_execute = 1
             if foreground_feature == 'spin':
@@ -342,7 +362,11 @@ def update_data(command, data):
 
 
 def myf(commands):
+    global k
     while True:
+        if k == 10:
+            break
+        time.sleep(seconds)
         global comm
         global user_pref
         global no_repeat_flag
@@ -365,14 +389,14 @@ def myf(commands):
 
         if no_repeat_flag == 1:
             no_repeat_ct += 1
-        if no_repeat_ct == 4:
+        if no_repeat_ct == 3:
             no_repeat_flag = 0
             no_repeat_ct = 0
 
 
 def send_data(msg_list):
-    msg = "{} {} {} {} {} {} {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],
-                                        msg_list[5], msg_list[6])
+    msg = "{} {} {} {} {} {} {} {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],
+                                           msg_list[5], msg_list[6], msg_list[7])
     print("Message {} is sent".format(msg))
     # ser.write(msg.encode('utf-8'))
 
@@ -515,13 +539,24 @@ while True:
     print('To raspberry pico: ', kubi_pico)
     print('foreground feature: ', foreground_feature)
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    if foreground_feature == 'launching angle':
+        foreground_feature = 'launching_angle'
+    elif foreground_feature == 'serving frequency':
+        foreground_feature = 'serving_frequency'
     kubi_pico.append(foreground_feature)
+    kubi_pico.append(LED)
     kubi_pico.append(operating_mode)
     send_data(kubi_pico)
     kubi_pico.pop()
     kubi_pico.pop()
+    kubi_pico.pop()
+    LED = 0
+    if foreground_feature == 'launching_angle':
+        foreground_feature = 'launching angle'
+    elif foreground_feature == 'serving_frequency':
+        foreground_feature = 'serving frequency'
     k += 1
-    if k == 31:
+    if k == 11:
         k = 0
         recognition_thread = _thread.start_new_thread(myf, (frames,))
     np.save("perf_data_thrown_balls.npy", num_of_balls_thrown)
