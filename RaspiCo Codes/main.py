@@ -96,7 +96,7 @@ def reloader(level):
 
 def servo1(direction):
     print("now servo1")
-    mostLeft = 75
+    mostLeft = 65
     inc = 3
     if direction == "2":
         servoRun.servo_Angle(mostLeft)
@@ -127,7 +127,7 @@ def servo2(lau):
         
     if lau == "2":
         servoRun2.servo_Angle(bottom+4*inc)
-
+"""
 k=0
 prev_freq ="1"
 _thread.start_new_thread(reloader,(1, ))
@@ -152,16 +152,17 @@ while True:
 k=0
 freq="1"
 prev_freq ="1"
-#_thread.start_new_thread(reloader,(1, ))
+_thread.start_new_thread(reloader,(1, ))
 
 k = 0
 while True:
-    
-    barrel("0","3")
-    
+    k+=1
+    barrel("0","0")
+    if k ==3:
+        k = -2
     #servoRun.servo_Angle(100)
-    servo1("0")
-    servo2("2")
+    servo1(str(k))
+    servo2(str(k))
     if freq != prev_freq:
         freq_changed_flag = 1
         utime.sleep(2)
@@ -170,11 +171,10 @@ while True:
         freq_changed_flag=0
     prev_freq = freq
     
-    k+=1
+   
 
     utime.sleep(2)
-"""
-    
+
     
     
     
