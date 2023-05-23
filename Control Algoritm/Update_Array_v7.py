@@ -7,7 +7,7 @@ import _thread
 import serial
 import os
 import numpy as np
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 import socket
 import threading
@@ -28,9 +28,8 @@ sample_format = pyaudio.paInt16
 channels = 1
 fs = 44100
 seconds = 1
-# os.chdir("/home/antia/Desktop/connection")
-# filename = "/home/antia/Desktop/connection/commands.wav"
-filename = "commands.wav"
+os.chdir("/home/antia/Desktop/connection")
+filename = "/home/antia/Desktop/connection/commands.wav"
 r = sr.Recognizer()
 flag = 0
 frames = []
@@ -60,7 +59,7 @@ last_comm = 'adjust speed'
 user_pref = [0, 0, 0, 0, 0]
 kubi_pico = [0, 0, 0, 0, 0]
 
-"""
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 TRIG = 23
@@ -68,7 +67,7 @@ ECHO = 24
 GPIO.setup(TRIG, GPIO.OUT)
 GPIO.setup(ECHO, GPIO.IN)
 ball_count = 0
-"""
+
 
 # Default settings
 on_off_switch = 0
@@ -398,10 +397,10 @@ def send_data(msg_list):
     msg = "{} {} {} {} {} {} {} {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],
                                            msg_list[5], msg_list[6], msg_list[7])
     print("Message {} is sent".format(msg))
-    # ser.write(msg.encode('utf-8'))
+    ser.write(msg.encode('utf-8'))
 
 
-"""
+
 def read_ultrasonic_sensor():
     global ball_count
     global sensor_thread_running
@@ -433,8 +432,9 @@ def read_ultrasonic_sensor():
 
         if distance < 20:
             ball_count += 1
+            print('Ball count= ', ball_count)
 
-
+"""
 def vibration_image():
     global vibrationFlag
     global imageFlag
@@ -515,7 +515,7 @@ while True:
         seq_counter = 0
     if operating_mode == 0 and Is_random == 0:
         if sensor_thread_running == 0:
-            # _thread.start_new_thread(read_ultrasonic_sensor, ())
+            _thread.start_new_thread(read_ultrasonic_sensor, ())
             sensor_thread_running = 1
         if sensor_thread_execute == 1:
             num_of_balls_thrown[kubi_pico[0] + 2] += ball_count
