@@ -20,7 +20,7 @@ vibrationFlag = 0
 # server_address = ('169.254.4.12', 6002)
 # server_socket.bind(server_address)
 num_synch = 0
-LED = 0
+LED = False
 
 total_file_duration = 2
 chunk = 1024
@@ -254,71 +254,71 @@ def update_data(command, data):
 
     if command in ['start', 'talked', 'Park', 'part']:
         on_off_switch = 1
-        LED = 1
+        LED = not LED
         print('The verbal command: start')
     elif command == 'stop':
         on_off_switch = 0
-        LED = 1
+        LED = not LED
         print('The verbal command: stop')
 
     if on_off_switch == 1:
         if command in ['repetition practicing', 'petition practicing', 'repetition']:
             operating_mode = 0
             mode_changed = 1
-            LED = 1
+            LED = not LED
             print('The verbal command: repetition practicing')
         elif command in ['sequence practicing', 'sequins practicing', 'sequence']:
             operating_mode = 1
             mode_changed = 1
-            LED = 1
+            LED = not LED
             print('The verbal command: sequence practicing')
         elif command in ['gamemode', 'Gamo', 'game mode']:
             operating_mode = 2
             mode_changed = 1
-            LED = 1
+            LED = not LED
             print('The verbal command: game mode')
         elif command in ['random']:
             Is_random = 1
-            LED = 1
+            LED = not LED
             mode_changed = 1
             print('The verbal command: random')
         elif command in ['regular']:
             Is_random = 0
-            LED = 1
+            LED = not LED
             print('The verbal command: regular')
         elif command in ['serving frequency', 'serving', 'frequency']:
             foreground_feature = 'serving frequency'
-            LED = 1
+            LED = not LED
             print('The verbal command: serving frequency')
         elif command in ['adjust speed', 'speed']:
             foreground_feature = 'speed'
-            LED = 1
+            LED = not LED
             print('The verbal command: speed')
         elif command in ['launching angle', 'launching Django']:
             foreground_feature = 'launching angle'
-            LED = 1
+            LED = not LED
             print('The verbal command: launching angle')
         elif command in ['adjust spin', 'it just spin', 'just spin', 'adjustable spin']:
             foreground_feature = 'spin'
-            LED = 1
+            LED = not LED
             print('The verbal command: spin')
         elif (command in ['right']) and data[3] != 2 and no_repeat_flag == 0:
             no_repeat_flag = 1
             data[3] = data[3] + 1
-            LED = 1
+            LED = not LED
             print('The verbal command: right')
             if operating_mode == 0:
                 sensor_thread_execute = 1
         elif (command in ['left']) and data[3] != -2 and no_repeat_flag == 0:
             no_repeat_flag = 1
             data[3] = data[3] - 1
-            LED = 1
+            LED = not LED
             print('The verbal command: left')
             if operating_mode == 0:
                 sensor_thread_execute = 1
         elif (command in ['low level', 'no level', 'low-level']) and no_repeat_flag == 0:
             no_repeat_flag = 1
-            LED = 1
+            LED = not LED
             print('The verbal command: low level')
             if operating_mode == 0:
                 sensor_thread_execute = 1
@@ -333,7 +333,7 @@ def update_data(command, data):
         elif (command in ['high level', 'hi level', 'hi Neville', 'high-level', 'volume level', 'I never',
                           'play devil', 'hi devil']) and no_repeat_flag == 0:
             no_repeat_flag = 1
-            LED = 1
+            LED = not LED
             print('The verbal command: high level')
             if operating_mode == 0:
                 sensor_thread_execute = 1
@@ -347,7 +347,7 @@ def update_data(command, data):
                 data[4] = data[4] + 1
         elif command in ['medium level']:
             print('The verbal command: medium level')
-            LED = 1
+            LED = not LED
             if operating_mode == 0:
                 sensor_thread_execute = 1
             if foreground_feature == 'spin':
@@ -366,7 +366,7 @@ def myf(commands):
     while True:
         if k == 10:
             break
-        time.sleep(seconds)
+        time.sleep(seconds+.2)
         global comm
         global user_pref
         global no_repeat_flag
@@ -550,7 +550,6 @@ while True:
     kubi_pico.pop()
     kubi_pico.pop()
     kubi_pico.pop()
-    LED = 0
     if foreground_feature == 'launching_angle':
         foreground_feature = 'launching angle'
     elif foreground_feature == 'serving_frequency':
