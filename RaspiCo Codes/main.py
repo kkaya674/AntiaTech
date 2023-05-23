@@ -46,30 +46,29 @@ def barrel(spinDir,speed):
     if speed =="-1":
         mainSpeed = 0
     if speed == "0":
-        mainSpeed = 20
+        mainSpeed = 0
     if speed == "1":
-        mainSpeed = 20
+        mainSpeed = 18
     if speed == "2":
-        mainSpeed = 25
+        mainSpeed = 21
     if speed =="3":
-        mainSpeed = 30
-    if speed ==  "5":
-        mainSpeed = 40
+        mainSpeed = 24
+
     
     ####Define Speed w.r.t Spin 
-    if speed !="-1":
+    if speed !="0":
         if spinDir == "-2":
-            spinSpeed = mainSpeed -10
+            spinSpeed = mainSpeed -7
         if spinDir == "-1":
-            spinSpeed = mainSpeed -5
+            spinSpeed = mainSpeed -3
         if spinDir == "0":
             spinSpeed = mainSpeed
         if spinDir == "1":
             spinSpeed = mainSpeed
-            mainSpeed = spinSpeed-5
+            mainSpeed = spinSpeed-3
         if spinDir == "2":
             spinSpeed = mainSpeed
-            mainSpeed = spinSpeed -10
+            mainSpeed = spinSpeed -7
     if speed == "-1" or speed =="0":
         spinSpeed = 0
         mainSpeed = 0
@@ -113,8 +112,8 @@ def servo1(direction):
     
 def servo2(lau):
     print("now servo2")
-    bottom = 100
-    inc = 7
+    bottom = 120
+    inc = 2
     if lau == "-2":
         servoRun2.servo_Angle(bottom)
     if lau == "-1":
@@ -147,27 +146,34 @@ while True:
         freq_changed_flag=0
     prev_freq = freq
     k+=1
-    if k%10== 0:
-        barrel("0","5")
-    utime.sleep(2)
-    
 
+    utime.sleep(0.5)
 """
-_thread.start_new_thread(reloader,())
+k=0
+freq="1"
+prev_freq ="1"
+#_thread.start_new_thread(reloader,(1, ))
+
 k = 0
 while True:
     
-    barrel("0","0")
+    barrel("0","3")
     
     #servoRun.servo_Angle(100)
-    servo1("2")
-    #servo2("2")
+    servo1("0")
+    servo2("2")
+    if freq != prev_freq:
+        freq_changed_flag = 1
+        utime.sleep(2)
+        #_thread.start_new_thread(reloader,(int("2"),))
+        prev_freq = freq
+        freq_changed_flag=0
+    prev_freq = freq
+    
     k+=1
-    if k%10== 0:
-        barrel("0","5")
-    utime.sleep(1)"""
-    
-    
+
+    utime.sleep(2)
+"""
     
     
     

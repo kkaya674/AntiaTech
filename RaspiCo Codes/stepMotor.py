@@ -70,6 +70,7 @@ def run(steps,freq,flag):
             break
         for j in range(8):
             if flag == 1:
+                print("flag = {}".format(flag))
                 break
             IN1.value(SEQ[j][0])
             IN2.value(SEQ[j][1])
