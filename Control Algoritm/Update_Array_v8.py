@@ -14,11 +14,11 @@ import threading
 
 imageFlag = 0
 vibrationFlag = 0
-# ser_vibration = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
-# ser_vibration.reset_input_buffer()
-# server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# server_address = ('169.254.4.12', 6002)
-# server_socket.bind(server_address)
+ser_vibration = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+ser_vibration.reset_input_buffer()
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_address = ('169.254.4.12', 6002)
+server_socket.bind(server_address)
 num_synch = 0
 LED = False
 
@@ -110,13 +110,13 @@ reset_counter = 0
 def image_reset():
     global imageFlag
     imageFlag = 0
-    print("image timer up and image flag cleared")
+    # print("image timer up and image flag cleared")
 
 
 def vibration_reset():
     global vibrationFlag
     vibrationFlag = 0
-    print("vibration timer up and vibration flag cleared")
+    # print("vibration timer up and vibration flag cleared")
 
 
 def vibrationTimer():
@@ -139,10 +139,12 @@ def checkSync():
             num_synch += 1
     else:
         if imageFlag:
-            print("ONLY IMAGE!!!")
+            # print("ONLY IMAGE!!!")
+            pass
         else:
             if vibrationFlag:
-                print("ONLY VIBRATION!!!")
+                # print("ONLY VIBRATION!!!")
+                pass
 
 
 def perf_data_update():
@@ -261,7 +263,7 @@ def update_data(command, data):
         print('The verbal command: stop')
 
     if on_off_switch == 1:
-        if command in ['repetition practicing', 'petition practicing', 'repetition']:
+        if command in ['repetition practicing', 'petition practicing', 'repetition', 'the petition practicing']:
             operating_mode = 0
             mode_changed = 1
             LED = not LED
@@ -289,7 +291,7 @@ def update_data(command, data):
             foreground_feature = 'serving frequency'
             LED = not LED
             print('The verbal command: serving frequency')
-        elif command in ['adjust speed', 'speed']:
+        elif command in ['adjust speed', 'speed', 'peed', 'adjust peed', 'just speed', 'it just speed']:
             foreground_feature = 'speed'
             LED = not LED
             print('The verbal command: speed')
@@ -315,7 +317,7 @@ def update_data(command, data):
             print('The verbal command: left')
             if operating_mode == 0:
                 sensor_thread_execute = 1
-        elif (command in ['low level', 'no level', 'low-level', 'low levels']) and no_repeat_flag == 0:
+        elif (command in ['low level', 'no level', 'low-level', 'low levels', 'low']) and no_repeat_flag == 0:
             no_repeat_flag = 1
             LED = not LED
             print('The verbal command: low level')
@@ -330,7 +332,7 @@ def update_data(command, data):
             elif foreground_feature == 'launching angle' and data[4] != -2:
                 data[4] = data[4] - 1
         elif (command in ['high level', 'hi level', 'hi Neville', 'high-level', 'volume level', 'I never',
-                          'play devil', 'hi devil', 'high levels']) and no_repeat_flag == 0:
+                          'play devil', 'hi devil', 'high levels', 'high', 'hi']) and no_repeat_flag == 0:
             no_repeat_flag = 1
             LED = not LED
             print('The verbal command: high level')
@@ -344,7 +346,7 @@ def update_data(command, data):
                 data[2] += 1
             elif foreground_feature == 'launching angle' and data[4] != 2:
                 data[4] = data[4] + 1
-        elif command in ['medium level']:
+        elif command in ['medium level', 'medium levels']:
             print('The verbal command: medium level')
             LED = not LED
             if operating_mode == 0:
@@ -381,7 +383,6 @@ def myf(commands):
             try:
                 audio_data = r.record(source)
                 text = r.recognize_google(audio_data)
-                print('What recognizer understood:', text)
                 user_pref = update_data(text, user_pref)
             except sr.UnknownValueError:
                 pass
@@ -398,7 +399,6 @@ def send_data(msg_list):
                                            msg_list[5], msg_list[6], msg_list[7])
     print("Message {} is sent".format(msg))
     ser.write(msg.encode('utf-8'))
-
 
 
 def read_ultrasonic_sensor():
@@ -432,9 +432,8 @@ def read_ultrasonic_sensor():
 
         if distance < 20:
             ball_count += 1
-            print('Ball count= ', ball_count)
 
-"""
+
 def vibration_image():
     global vibrationFlag
     global imageFlag
@@ -493,14 +492,14 @@ def vibration_image():
     # Close the server socket
     server_socket.close()
 
-"""
+
 sensor_thread_execute = 0
 sensor_thread_running = 0
 k = 0
 ball_count = 0
 listener_thread = _thread.start_new_thread(listener, ())
 recognition_thread = _thread.start_new_thread(myf, (frames,))
-# vibration_image_thread = _thread.start_new_thread(vibration_image, ())
+vibration_image_thread = _thread.start_new_thread(vibration_image, ())
 while True:
     if operating_mode == 1:
         seq_counter += 1
@@ -518,6 +517,10 @@ while True:
             _thread.start_new_thread(read_ultrasonic_sensor, ())
             sensor_thread_running = 1
         if sensor_thread_execute == 1:
+            print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+            print('To raspberry pico: ', kubi_pico)
+            print('foreground feature: ', foreground_feature)
+            print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
             num_of_balls_thrown[kubi_pico[0] + 2] += ball_count
             num_of_balls_thrown[kubi_pico[1] + 5] += ball_count
             num_of_balls_thrown[kubi_pico[2] + 7] += ball_count
@@ -528,6 +531,8 @@ while True:
             num_of_balls_returned[kubi_pico[2] + 7] += num_synch
             num_of_balls_returned[kubi_pico[3] + 13] += num_synch
             num_of_balls_returned[kubi_pico[4] + 18] += num_synch
+            print("ball_count = ", ball_count)
+            print('num_synch = ', num_synch)
             print("returned ball number:", num_of_balls_returned)
             print("thrown ball number", num_of_balls_thrown)
             num_synch = 0
@@ -535,10 +540,11 @@ while True:
             sensor_thread_execute = 0
         perf_data_update()
     sensor_thread_execute = 0
-    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-    print('To raspberry pico: ', kubi_pico)
-    print('foreground feature: ', foreground_feature)
-    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    if operating_mode != 0:
+        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        print('To raspberry pico: ', kubi_pico)
+        print('foreground feature: ', foreground_feature)
+        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     if foreground_feature == 'launching angle':
         foreground_feature = 'launching_angle'
     elif foreground_feature == 'serving frequency':
