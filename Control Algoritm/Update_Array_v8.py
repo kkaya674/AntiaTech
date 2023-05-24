@@ -430,7 +430,7 @@ def read_ultrasonic_sensor():
         distance = pulse_duration * 17150
         distance = round(distance, 2)
 
-        if distance < 20:
+        if distance < 50:
             ball_count += 1
 
 
