@@ -270,45 +270,49 @@ def update_data(command, data):
             num_of_balls_thrown = np.zeros(21)
             reset_counter = 0
 
-    if command in ['start', 'talked', 'Park', 'part', 'begin']:
+    if command in ['wake up', 'wake', 'wakeup']:
         on_off_switch = 1
         LED = not LED
-        print('The verbal command: start')
-    elif command == 'stop':
+        print('The verbal command: wake up')
+    elif command in ['sleep', 'leaf', 'leap', 'leave', 'sleeve', 'Fleet', 'lead']:
         on_off_switch = 0
         LED = not LED
-        print('The verbal command: stop')
+        print('The verbal command: sleep')
 
     if on_off_switch == 1:
-        if command in ['repetition practicing', 'petition practicing', 'repetition', 'the petition practicing']:
+        if command in ['repetition practicing', 'petition practicing', 'repetition', 'the petition practicing',
+                       'repetition practice']:
             operating_mode = 0
             mode_changed = 1
             LED = not LED
             print('The verbal command: repetition practicing')
-        elif command in ['sequence practicing', 'sequins practicing', 'sequence']:
+        elif command in ['sequence practicing', 'sequins practicing', 'sequence',
+                         'sequence practice'] or 'sequence' in command:
             operating_mode = 1
             mode_changed = 1
             LED = not LED
             print('The verbal command: sequence practicing')
-        elif command in ['gamemode', 'Gamo', 'game mode']:
+        elif command in ['gamemode', 'Gamo', 'game mode', 'game']:
             operating_mode = 2
             mode_changed = 1
             LED = not LED
             print('The verbal command: game mode')
-        elif command in ['random']:
+        elif command in ['random', 'Lando', 'Rondo', 'Randa', 'Brando', 'blando', 'Rhonda']:
             Is_random = 1
             LED = not LED
             mode_changed = 1
             print('The verbal command: random')
-        elif command in ['regular']:
+        elif command in ['regular', 'Reggie', 'regimen']:
             Is_random = 0
             LED = not LED
             print('The verbal command: regular')
-        elif command in ['serving frequency', 'serving', 'frequency']:
+        elif command in ['serving frequency', 'serving', 'frequency', 'starving frequency', 'starving',
+                         'starting frequency', 'starting'] or 'serving' in command or 'frequency' in command:
             foreground_feature = 'serving frequency'
             LED = not LED
             print('The verbal command: serving frequency')
-        elif command in ['adjust speed', 'speed', 'peed', 'adjust peed', 'just speed', 'it just speed']:
+        elif command in ['adjust speed', 'speed', 'peed', 'adjust peed', 'just speed',
+                         'it just speed'] or 'speed' in command:
             foreground_feature = 'speed'
             LED = not LED
             print('The verbal command: speed')
@@ -334,7 +338,8 @@ def update_data(command, data):
             print('The verbal command: left')
             if operating_mode == 0:
                 sensor_thread_execute = 1
-        elif (command in ['low level', 'no level', 'low-level', 'low levels', 'low']) and no_repeat_flag == 0:
+        elif (command in ['low level', 'no level', 'low-level', 'low levels',
+                          'low'] or 'low' in command) and no_repeat_flag == 0:
             no_repeat_flag = 1
             LED = not LED
             print('The verbal command: low level')
@@ -349,7 +354,8 @@ def update_data(command, data):
             elif foreground_feature == 'launching angle' and data[4] != -2:
                 data[4] = data[4] - 1
         elif (command in ['high level', 'hi level', 'hi Neville', 'high-level', 'volume level', 'I never',
-                          'play devil', 'hi devil', 'high levels', 'high', 'hi']) and no_repeat_flag == 0:
+                          'play devil', 'hi devil', 'high levels',
+                          'high', 'hi'] or 'high' in command) and no_repeat_flag == 0:
             no_repeat_flag = 1
             LED = not LED
             print('The verbal command: high level')
