@@ -7,7 +7,7 @@ import _thread
 import serial
 import os
 import numpy as np
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 import socket
 import threading
@@ -20,21 +20,21 @@ vibrationFlag = 0
 # server_address = ('169.254.4.12', 6002)
 # server_socket.bind(server_address)
 num_synch = 0
+LED = False
 
 total_file_duration = 2
 chunk = 1024
 sample_format = pyaudio.paInt16
 channels = 1
-fs = 16000
+fs = 44100
 seconds = 1
-# os.chdir("/home/antia/Desktop/connection")
-# filename = "/home/antia/Desktop/connection/commands.wav"
-filename = "commands.wav"
+os.chdir("/home/antia/Desktop/connection")
+filename = "/home/antia/Desktop/connection/commands.wav"
 r = sr.Recognizer()
 flag = 0
 frames = []
 
-"""
+
 ser = serial.Serial(
     port='/dev/ttyACM0',  # Change this according to connection methods, e.g. /dev/ttyUSB0
     baudrate=115200,
@@ -43,7 +43,7 @@ ser = serial.Serial(
     bytesize=serial.EIGHTBITS,
     timeout=1
 )
-"""
+
 p = pyaudio.PyAudio()
 stream = p.open(
     format=sample_format,
@@ -59,7 +59,7 @@ last_comm = 'adjust speed'
 user_pref = [0, 0, 0, 0, 0]
 kubi_pico = [0, 0, 0, 0, 0]
 
-"""
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 TRIG = 23
@@ -67,7 +67,7 @@ ECHO = 24
 GPIO.setup(TRIG, GPIO.OUT)
 GPIO.setup(ECHO, GPIO.IN)
 ball_count = 0
-"""
+
 
 # Default settings
 on_off_switch = 0
@@ -78,8 +78,8 @@ foreground_feature = 'spin'
 seq_counter = 0
 random_vector = [random.randint(-2, 2), random.randint(0, 2), random.randint(0, 2), random.randint(-2, 2),
                  random.randint(-2, 2)]
-operating_mode = 0   # operating mode (0: rep-prac; 1: seq-prac; 2: game-mode)
-Is_random = 0   # randomness (0: regular; 1: random)
+operating_mode = 0  # operating mode (0: rep-prac; 1: seq-prac; 2: game-mode)
+Is_random = 0  # randomness (0: regular; 1: random)
 user_pref[0] = 0  # spin (-2,-1: backspin; 0: no spin; 1,2: topspin)
 user_pref[1] = 1  # frequency (0,1,2)
 user_pref[2] = 1  # speed (0,1,2,3)
@@ -156,7 +156,7 @@ def perf_data_update():
         if value < 15:
             nope = 1
     if nope == 0:
-        temp = 1 - (num_of_balls_returned / (num_of_balls_thrown+1))
+        temp = 1 - (num_of_balls_returned / (num_of_balls_thrown + 1))
         r_spin = rv_discrete(name='r_spin', values=([-2, -1, 0, 1, 2], temp[:5] / np.sum(temp[:5])))
         r_freq = rv_discrete(name='r_freq', values=([0, 1, 2], temp[5:8] / np.sum(temp[5:8])))
         r_speed = rv_discrete(name='r_speed', values=([1, 2, 3], temp[8:11] / np.sum(temp[8:11])))
@@ -230,7 +230,6 @@ def motor_parameters(op_mode, rand, data, counter, vec_random, last_data_pico, s
 
 
 def update_data(command, data):
-
     global operating_mode
     global Is_random
     global mode_changed
@@ -241,6 +240,7 @@ def update_data(command, data):
     global reset_counter
     global num_of_balls_thrown
     global num_of_balls_returned
+    global LED
 
     if command == 'reset':
         reset_counter += 1
@@ -251,57 +251,73 @@ def update_data(command, data):
             num_of_balls_returned = np.zeros(21)
             reset_counter = 0
 
-    if command == 'start':
+    if command in ['start', 'talked', 'Park', 'part']:
         on_off_switch = 1
+        LED = not LED
+        print('The verbal command: start')
     elif command == 'stop':
         on_off_switch = 0
+        LED = not LED
+        print('The verbal command: stop')
 
     if on_off_switch == 1:
-        if command in ['repetition practicing', 'petition practicing', 'repetition', 'repetition practice', 'the petition practicing']:
+        if command in ['repetition practicing', 'petition practicing', 'repetition']:
             operating_mode = 0
             mode_changed = 1
+            LED = not LED
             print('The verbal command: repetition practicing')
-        elif command in ['sequence practicing', 'sequins practicing', 'sequence', 'sequence practice']:
+        elif command in ['sequence practicing', 'sequins practicing', 'sequence']:
             operating_mode = 1
             mode_changed = 1
+            LED = not LED
             print('The verbal command: sequence practicing')
-        elif command in ['gamemode', 'Gamo', 'game mode', 'game']:
+        elif command in ['gamemode', 'Gamo', 'game mode']:
             operating_mode = 2
             mode_changed = 1
+            LED = not LED
             print('The verbal command: game mode')
         elif command in ['random']:
             Is_random = 1
+            LED = not LED
             mode_changed = 1
             print('The verbal command: random')
         elif command in ['regular']:
             Is_random = 0
+            LED = not LED
             print('The verbal command: regular')
         elif command in ['serving frequency', 'serving', 'frequency']:
             foreground_feature = 'serving frequency'
+            LED = not LED
             print('The verbal command: serving frequency')
         elif command in ['adjust speed', 'speed']:
             foreground_feature = 'speed'
+            LED = not LED
             print('The verbal command: speed')
-        elif command in ['launching angle', 'launching Django', 'launch in Django', 'launching', 'angle']:
+        elif command in ['launching angle', 'launching Django', 'launch in Django']:
             foreground_feature = 'launching angle'
+            LED = not LED
             print('The verbal command: launching angle')
         elif command in ['adjust spin', 'it just spin', 'just spin', 'adjustable spin', 'adjust spins']:
             foreground_feature = 'spin'
+            LED = not LED
             print('The verbal command: spin')
         elif (command in ['right']) and data[3] != 2 and no_repeat_flag == 0:
             no_repeat_flag = 1
             data[3] = data[3] + 1
+            LED = not LED
             print('The verbal command: right')
             if operating_mode == 0:
                 sensor_thread_execute = 1
         elif (command in ['left']) and data[3] != -2 and no_repeat_flag == 0:
             no_repeat_flag = 1
             data[3] = data[3] - 1
+            LED = not LED
             print('The verbal command: left')
             if operating_mode == 0:
                 sensor_thread_execute = 1
-        elif (command in ['low level', 'long level' 'no level', 'low-level', 'low', 'low levels']) and no_repeat_flag == 0:
+        elif (command in ['low level', 'no level', 'low-level', 'low levels']) and no_repeat_flag == 0:
             no_repeat_flag = 1
+            LED = not LED
             print('The verbal command: low level')
             if operating_mode == 0:
                 sensor_thread_execute = 1
@@ -314,8 +330,9 @@ def update_data(command, data):
             elif foreground_feature == 'launching angle' and data[4] != -2:
                 data[4] = data[4] - 1
         elif (command in ['high level', 'hi level', 'hi Neville', 'high-level', 'volume level', 'I never',
-                          'play devil', 'hi devil', 'high', 'ilevel', 'high levels']) and no_repeat_flag == 0:
+                          'play devil', 'hi devil', 'high levels']) and no_repeat_flag == 0:
             no_repeat_flag = 1
+            LED = not LED
             print('The verbal command: high level')
             if operating_mode == 0:
                 sensor_thread_execute = 1
@@ -327,8 +344,9 @@ def update_data(command, data):
                 data[2] += 1
             elif foreground_feature == 'launching angle' and data[4] != 2:
                 data[4] = data[4] + 1
-        elif command in ['medium level', 'medium levels']:
+        elif command in ['medium level']:
             print('The verbal command: medium level')
+            LED = not LED
             if operating_mode == 0:
                 sensor_thread_execute = 1
             if foreground_feature == 'spin':
@@ -343,7 +361,11 @@ def update_data(command, data):
 
 
 def myf(commands):
+    global k
     while True:
+        if k == 10:
+            break
+        time.sleep(seconds+.2)
         global comm
         global user_pref
         global no_repeat_flag
@@ -366,18 +388,19 @@ def myf(commands):
 
         if no_repeat_flag == 1:
             no_repeat_ct += 1
-        if no_repeat_ct == 4:
+        if no_repeat_ct == 3:
             no_repeat_flag = 0
             no_repeat_ct = 0
 
 
 def send_data(msg_list):
-    msg = "{} {} {} {} {} {} {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],
-                                        msg_list[5], msg_list[6])
+    msg = "{} {} {} {} {} {} {} {}".format(msg_list[0], msg_list[1], msg_list[2], msg_list[3], msg_list[4],
+                                           msg_list[5], msg_list[6], msg_list[7])
     print("Message {} is sent".format(msg))
-    # ser.write(msg.encode('utf-8'))
+    ser.write(msg.encode('utf-8'))
 
-"""
+
+
 def read_ultrasonic_sensor():
     global ball_count
     global sensor_thread_running
@@ -406,11 +429,12 @@ def read_ultrasonic_sensor():
 
         distance = pulse_duration * 17150
         distance = round(distance, 2)
-        
+
         if distance < 20:
             ball_count += 1
+            print('Ball count= ', ball_count)
 
-
+"""
 def vibration_image():
     global vibrationFlag
     global imageFlag
@@ -491,14 +515,14 @@ while True:
         seq_counter = 0
     if operating_mode == 0 and Is_random == 0:
         if sensor_thread_running == 0:
-            # _thread.start_new_thread(read_ultrasonic_sensor, ())
+            _thread.start_new_thread(read_ultrasonic_sensor, ())
             sensor_thread_running = 1
         if sensor_thread_execute == 1:
-            num_of_balls_thrown[kubi_pico[0]+2] += ball_count
-            num_of_balls_thrown[kubi_pico[1]+5] += ball_count
-            num_of_balls_thrown[kubi_pico[2]+7] += ball_count
-            num_of_balls_thrown[kubi_pico[3]+13] += ball_count
-            num_of_balls_thrown[kubi_pico[4]+18] += ball_count
+            num_of_balls_thrown[kubi_pico[0] + 2] += ball_count
+            num_of_balls_thrown[kubi_pico[1] + 5] += ball_count
+            num_of_balls_thrown[kubi_pico[2] + 7] += ball_count
+            num_of_balls_thrown[kubi_pico[3] + 13] += ball_count
+            num_of_balls_thrown[kubi_pico[4] + 18] += ball_count
             num_of_balls_returned[kubi_pico[0] + 2] += num_synch
             num_of_balls_returned[kubi_pico[1] + 5] += num_synch
             num_of_balls_returned[kubi_pico[2] + 7] += num_synch
@@ -515,18 +539,28 @@ while True:
     print('To raspberry pico: ', kubi_pico)
     print('foreground feature: ', foreground_feature)
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    if foreground_feature == 'launching angle':
+        foreground_feature = 'launching_angle'
+    elif foreground_feature == 'serving frequency':
+        foreground_feature = 'serving_frequency'
     kubi_pico.append(foreground_feature)
+    kubi_pico.append(LED)
     kubi_pico.append(operating_mode)
     send_data(kubi_pico)
     kubi_pico.pop()
     kubi_pico.pop()
+    kubi_pico.pop()
+    if foreground_feature == 'launching_angle':
+        foreground_feature = 'launching angle'
+    elif foreground_feature == 'serving_frequency':
+        foreground_feature = 'serving frequency'
     k += 1
-    if k == 31:
+    if k == 11:
         k = 0
         recognition_thread = _thread.start_new_thread(myf, (frames,))
     np.save("perf_data_thrown_balls.npy", num_of_balls_thrown)
     np.save("perf_data_returned_balls.npy", num_of_balls_returned)
     if operating_mode != 0:
-        time.sleep(3*seconds)
+        time.sleep(3 * seconds)
     else:
         time.sleep(seconds)
