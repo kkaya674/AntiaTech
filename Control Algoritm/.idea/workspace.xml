@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5370b994-9d69-4002-84ed-d1cb1b63cd3e" name="Changes" comment="some new commands added">
-      <change beforePath="$PROJECT_DIR$/.idea/Control Algoritm.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Control Algoritm.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/networkScan.py" beforeDir="false" afterPath="$PROJECT_DIR$/networkScan.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

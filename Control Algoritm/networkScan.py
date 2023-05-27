@@ -1,3 +1,22 @@
+"""
+If you want to use Wi-Fi instead of a wired Ethernet connection, you'll need to determine the name of your Wi-Fi network interface. The interface name for Wi-Fi can vary depending on the operating system and the Wi-Fi adapter you're using. Here are a few common interface names for Wi-Fi:
+
+Linux: wlan0, wlp2s0, wlan1, etc.
+macOS: en0, en1, en2, etc.
+Windows: Wi-Fi, Wireless Network Connection, etc.
+To find the interface name for Wi-Fi on your specific system, you can use the following steps:
+
+Linux: You can use the iwconfig command or the ip command to list the available network interfaces. Look for an interface name starting with "wlan" or "wlp".
+
+macOS: You can use the networksetup -listallhardwareports command in the terminal to list all network interfaces. Look for an interface labeled as Wi-Fi.
+
+Windows: You can open the Command Prompt and use the netsh interface show interface command to list all network interfaces. Look for an interface labeled as Wi-Fi.
+
+Once you have determined the correct Wi-Fi interface name for your system, replace 'eth0' in the previous code example with the appropriate Wi-Fi interface name. For example, if your Wi-Fi interface name is 'wlan0', the line should be:
+"""
+
+
+
 from scapy.all import ARP, Ether, srp
 interface = "Wi-Fi"
 thirdNumber =65
