@@ -412,7 +412,7 @@ def myf(commands):
 
         if no_repeat_flag == 1:
             no_repeat_ct += 1
-        if no_repeat_ct == 3:
+        if no_repeat_ct == 4:
             no_repeat_flag = 0
             no_repeat_ct = 0
 
@@ -422,6 +422,7 @@ def send_data(msg_list):
                                            msg_list[5], msg_list[6], msg_list[7])
     print("Message {} is sent".format(msg))
     # ser.write(msg.encode('utf-8'))
+
 
 '''
 def read_ultrasonic_sensor():
@@ -541,8 +542,8 @@ while True:
             sensor_thread_running = 1
         if sensor_thread_execute == 1:
             print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-            print('To raspberry pico: ', kubi_pico)
-            print('foreground feature: ', foreground_feature)
+            print("To raspberry pico: ", kubi_pico)
+            print("foreground feature: ", foreground_feature)
             print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
             ball_count = random.randint(10, 20)
             num_synch = random.randint(ball_count-7, ball_count)
@@ -557,7 +558,7 @@ while True:
             num_of_balls_returned[kubi_pico[3] + 13] += num_synch
             num_of_balls_returned[kubi_pico[4] + 18] += num_synch
             print("ball_count = ", ball_count)
-            print('num_synch = ', num_synch)
+            print("num_synch = ", num_synch)
             print("returned ball number:", num_of_balls_returned)
             print("thrown ball number", num_of_balls_thrown)
             num_synch = 0
@@ -567,8 +568,8 @@ while True:
     sensor_thread_execute = 0
     if operating_mode != 0:
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-        print('To raspberry pico: ', kubi_pico)
-        print('foreground feature: ', foreground_feature)
+        print("To raspberry pico: ", kubi_pico)
+        print("foreground feature: ", foreground_feature)
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     if foreground_feature == 'launching angle':
         foreground_feature = 'launching_angle'
