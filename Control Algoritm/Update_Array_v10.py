@@ -571,6 +571,7 @@ sensor_thread_running = 0
 k = 0
 ball_count = 0
 listener_thread = _thread.start_new_thread(listener, ())
+# step_thread = _thread.start_new_thread(step_motor, (0.002,))
 recognition_thread = _thread.start_new_thread(myf, (frames,))
 # vibration_image_thread = _thread.start_new_thread(vibration_image, ())
 while True:
