@@ -594,8 +594,8 @@ while True:
             print("To raspberry pico: ", kubi_pico)
             print("foreground feature: ", foreground_feature)
             print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-            ball_count = random.randint(10, 20)
-            num_synch = random.randint(ball_count-7, ball_count)
+            # ball_count = random.randint(10, 20)
+            # num_synch = random.randint(ball_count-7, ball_count)
             num_of_balls_thrown[kubi_pico[0] + 2] += ball_count
             num_of_balls_thrown[kubi_pico[1] + 5] += ball_count
             num_of_balls_thrown[kubi_pico[2] + 7] += ball_count
