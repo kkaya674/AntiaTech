@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5370b994-9d69-4002-84ed-d1cb1b63cd3e" name="Changes" comment="some new commands added">
-      <change beforePath="$PROJECT_DIR$/networkScan.py" beforeDir="false" afterPath="$PROJECT_DIR$/networkScan.py" afterDir="false" />
-    </list>
+    <list default="true" id="5370b994-9d69-4002-84ed-d1cb1b63cd3e" name="Changes" comment="some new commands added" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

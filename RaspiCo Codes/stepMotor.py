@@ -64,7 +64,7 @@ def run(steps,freq,flag):
         DELAY =0.002
    
     
-    print(DELAY)
+    
     for i in range(steps):
         if flag == 1:
             break
@@ -72,10 +72,12 @@ def run(steps,freq,flag):
             if flag == 1:
                 print("flag = {}".format(flag))
                 break
+            
             IN1.value(SEQ[j][0])
             IN2.value(SEQ[j][1])
             IN3.value(SEQ[j][2])
             IN4.value(SEQ[j][3])
+            
             utime.sleep(DELAY)
         x = stopExecution()
         if x == True:
@@ -84,10 +86,26 @@ def run(steps,freq,flag):
             
         
            
-def reverseRun(steps):
+def reverseRun(steps,freq,flag):
     #print("Reverse Run")
     #DELAY = speedCheck()
     k = 0
+    if freq == 0:
+        DELAY = 0.005
+    if freq == 1:
+        DELAY = 0.003
+    if freq == 2:
+        DELAY =0.002
+   
+    
+    
+    for i in range(steps):
+        if flag == 1:
+            break
+        for j in range(8):
+            if flag == 1:
+                #print("flag = {}".format(flag))
+                break
     for i in range(steps):
         for j in range(8):
             IN1.value(SEQ2[j][0])
