@@ -20,3 +20,5 @@ integers = re.findall(r'\d+', temp)
 integer_array = [int(num) for num in integers]
 print(integer_array)
 print(integer_array[1])
+command = 'serving frequency'
+print('serving' in command)

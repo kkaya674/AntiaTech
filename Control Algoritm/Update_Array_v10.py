@@ -64,14 +64,41 @@ last_comm = 'adjust speed'
 user_pref = [0, 0, 0, 0, 0]
 kubi_pico = [0, 0, 0, 0, 0]
 
-'''
+"""
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
+step1 = 17
+step2 = 18
+step3 = 27
+step4 = 22
 TRIG = 23
 ECHO = 24
 GPIO.setup(TRIG, GPIO.OUT)
 GPIO.setup(ECHO, GPIO.IN)
-'''
+GPIO.setup(step1, GPIO.OUT )
+GPIO.setup(step2, GPIO.OUT )
+GPIO.setup(step3, GPIO.OUT )
+GPIO.setup(step4, GPIO.OUT )
+
+GPIO.output(step1, GPIO.LOW )
+GPIO.output(step2, GPIO.LOW )
+GPIO.output(step3, GPIO.LOW )
+GPIO.output(step4, GPIO.LOW )
+
+motor_pins = [step1, step2, step3, step4]
+motor_step_counter = 0
+
+step_count = 4096
+
+step_sequence = [[1, 0, 0, 1],
+                 [1, 0, 0, 0],
+                 [1, 1, 0, 0],
+                 [0, 1, 0, 0],
+                 [0, 1, 1, 0],
+                 [0, 0, 1, 0],
+                 [0, 0, 1, 1],
+                 [0, 0, 0, 1]]
+"""
 ball_count = 0
 
 
@@ -122,7 +149,25 @@ r_speed = rv_discrete(name='r_speed', values=([1, 2, 3], dummy_perf_data_speed))
 r_dir = rv_discrete(name='r_dir', values=([-2, -1, 0, 1, 2], dummy_perf_data_dir))
 r_lau_ang = rv_discrete(name='r_lau_ang', values=([-2, -1, 0, 1, 2], dummy_perf_data_lau_ang))
 
+freq_changed = 0
 reset_counter = 0
+execute_step = 0
+
+"""
+def step_motor(sleep):
+    global execute_step
+    global motor_step_counter
+    while True:
+        i = 0
+        for i in range(step_count):
+            for pin in range(0, len(motor_pins)):
+                if execute_step == 1:
+                    execute_step = 0
+                    break
+                GPIO.output(motor_pins[pin], step_sequence[motor_step_counter][pin])
+                motor_step_counter = (motor_step_counter - 1) % 8
+            time.sleep(sleep)
+"""
 
 
 def image_reset():
@@ -261,6 +306,7 @@ def update_data(command, data):
     global num_of_balls_thrown
     global num_of_balls_returned
     global LED
+    global freq_changed
 
     if command == 'reset':
         reset_counter += 1
@@ -349,6 +395,7 @@ def update_data(command, data):
                 data[0] = data[0] - 1
             elif foreground_feature == 'serving frequency':
                 data[1] = 0
+                freq_changed = 1
             elif foreground_feature == 'speed' and data[2] != 0:
                 data[2] -= 1
             elif foreground_feature == 'launching angle' and data[4] != -2:
@@ -365,6 +412,7 @@ def update_data(command, data):
                 data[0] = data[0] + 1
             elif foreground_feature == 'serving frequency':
                 data[1] = 2
+                freq_changed = 1
             elif foreground_feature == 'speed' and data[2] != 3:
                 data[2] += 1
             elif foreground_feature == 'launching angle' and data[4] != 2:
@@ -378,6 +426,7 @@ def update_data(command, data):
                 data[0] = 0
             elif foreground_feature == 'serving frequency':
                 data[1] = 1
+                freq_changed =1
             elif foreground_feature == 'speed':
                 data[2] = 2
             elif foreground_feature == 'launching angle':
@@ -522,6 +571,7 @@ sensor_thread_running = 0
 k = 0
 ball_count = 0
 listener_thread = _thread.start_new_thread(listener, ())
+# step_thread = _thread.start_new_thread(step_motor, (0.002,))
 recognition_thread = _thread.start_new_thread(myf, (frames,))
 # vibration_image_thread = _thread.start_new_thread(vibration_image, ())
 while True:
@@ -582,6 +632,21 @@ while True:
     kubi_pico.pop()
     kubi_pico.pop()
     kubi_pico.pop()
+    """
+    if freq_changed == 1:
+        freq_changed = 0
+        if on_off_switch == 1:
+            execute_step = 1
+            time.sleep(0.01)
+            if kubi_pico[1] == 0:
+                step_thread = _thread.start_new_thread(step_motor, (0.002,))
+            elif kubi_pico[1] == 1:
+                step_thread = _thread.start_new_thread(step_motor, (0.003,))
+            else:
+                step_thread = _thread.start_new_thread(step_motor, (0.005,))
+        else:
+            execute_step = 1
+    """
     if foreground_feature == 'launching_angle':
         foreground_feature = 'launching angle'
     elif foreground_feature == 'serving_frequency':

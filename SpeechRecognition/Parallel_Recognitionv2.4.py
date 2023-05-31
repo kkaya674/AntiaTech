@@ -13,7 +13,6 @@ fs = 44100
 seconds = 1
 filename = "commands.wav"
 r = sr.Recognizer()
-flag = 0
 
 
 def myf(commands):
@@ -31,10 +30,11 @@ def myf(commands):
             text = r.recognize_google(audio_data)
             print(text)
         except sr.UnknownValueError:
-            print("Didn't get the command")
+            pass
+            # print("Didn't get the command")
     elapsed_time = time.time() - t
-    print('elapsed time while processing=')
-    print(format(elapsed_time, '.5f'))
+    # print('elapsed time while processing=')
+    # print(format(elapsed_time, '.5f'))
 
 
 frames = []
