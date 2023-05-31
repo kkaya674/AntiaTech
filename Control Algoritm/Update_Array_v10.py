@@ -156,17 +156,17 @@ execute_step = 0
 """
 def step_motor(sleep):
     global execute_step
+    global motor_step_counter
     while True:
+        i = 0
         for i in range(step_count):
-            for j in range(8):
+            for pin in range(0, len(motor_pins)):
                 if execute_step == 1:
                     execute_step = 0
-                    break                
-                step1.value(step_sequence[j][0])
-                step2.value(step_sequence[j][1])
-                step3.value(step_sequence[j][2])
-                step4.value(step_sequence[j][3])
-                time.sleep(sleep)
+                    break
+                GPIO.output(motor_pins[pin], step_sequence[motor_step_counter][pin])
+                motor_step_counter = (motor_step_counter - 1) % 8
+            time.sleep(sleep)
 """
 
 
