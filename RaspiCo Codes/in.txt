@@ -1,1 +1,1 @@
-0 1 1 1 0 spin True 0
+0 0 0 0 0 spin False 0

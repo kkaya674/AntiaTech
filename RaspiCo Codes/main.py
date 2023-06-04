@@ -5,14 +5,26 @@ import servoRun
 import servoRun2
 import utime
 import communicate
-from machine import Pin 
+from machine import Pin
+import lcdCode
+import time
 
+
+"""
+
+delay = 0.001
+Speed = 60
+spinSpeed = Speed-15
+spinDir = "TOP"
+"""
 
 m1 = Pin(18, Pin.IN, Pin.PULL_DOWN)
 x = ""
 time1 = time.time()
 utime.sleep(1)
 oldCount = 0
+
+freq_changed_flag = 0
 
 def ledToggle(value):
     if value == "True":
@@ -28,7 +40,7 @@ def ledToggle(value):
 
 def readCommand():
     msg = communicate.readData()
-    print(msg)
+    
     #msg = msg.split(" ")
     spin = msg[0]
     freq = msg[1]
@@ -66,17 +78,17 @@ def barrel(spinDir,speed):
     ####Define Speed w.r.t Spin 
     if speed !="0":
         if spinDir == "-2":
-            spinSpeed = mainSpeed -4
+            spinSpeed = mainSpeed -30
         if spinDir == "-1":
-            spinSpeed = mainSpeed -2
+            spinSpeed = mainSpeed -15
         if spinDir == "0":
             spinSpeed = mainSpeed
         if spinDir == "1":
             spinSpeed = mainSpeed
-            mainSpeed = spinSpeed-2
+            mainSpeed = spinSpeed-15
         if spinDir == "2":
             spinSpeed = mainSpeed
-            mainSpeed = spinSpeed -4
+            mainSpeed = spinSpeed -30
     if speed == "-1" or speed =="0":
         spinSpeed = 0
         mainSpeed = 0
@@ -106,24 +118,24 @@ def reloader(level):
 
 def servo1(direction):
   
-    mostLeft = 120
-    inc = 5
+    mostLeft = 125
+    inc = 6
     if direction == "-2":
-        servoRun.servo_Angle(mostLeft)
+        servoRun.servo_Angle(mostLeft-2*inc)
     if direction == "-1":
-        servoRun.servo_Angle(mostLeft+inc)
+        servoRun.servo_Angle(mostLeft-inc)
     if direction == "0":
-        servoRun.servo_Angle(mostLeft+inc*2)
+        servoRun.servo_Angle(mostLeft)
     if direction == "1":
-        servoRun.servo_Angle(mostLeft+inc*3)
+        servoRun.servo_Angle(mostLeft+inc)
     if direction == "2":
-        servoRun.servo_Angle(mostLeft+inc*4)
+        servoRun.servo_Angle(mostLeft+inc*2)
         
     
 def servo2(lau):
  
-    bottom = 120
-    inc = 2
+    bottom = 115
+    inc = 3
     if lau == "-2":
         servoRun2.servo_Angle(bottom)
     if lau == "-1":
@@ -138,7 +150,7 @@ def servo2(lau):
     if lau == "2":
         servoRun2.servo_Angle(bottom+4*inc)
 print("start")
-
+"""
 k=0
 prev_freq ="1"
 led = 0
@@ -149,32 +161,28 @@ while True:
     barrel(spin,speed) ##namlu spin ve speed bilgisini gönderek motor parametrelerini degistiriyor
     servo1(direction)
     servo2(lau_angle)
+    lcdCode.writeStr("Mode:{}".format(mode),"Speed:{}".format(speed))
 
 
 
 
 """
-k=0
-freq="1"
-prev_freq ="1"
-_thread.start_new_thread(reloader,(1, ))
 
-k = 0
+
+k = 1
+
 while True:
-    
+        
     barrel("0","0")
-
-    servo1("2")
+    servo1("0")
     servo2("0")
-    
+    lcdCode.writeStr("deneme","rana")
     x=x+str(m1.value())
+    print(x)
+    print(x.count("1"))
     time2 = time.time()
     if not((time2-time1) % 10):
-        newCount = x.count("10")
-        rpmSpeed = newCount-oldCount
-        rpmSpeed = rpmSpeed*6
+        rpmSpeed = x.count("1")*6
+        x = ""
         print("RPM :{}".format(rpmSpeed))
-        oldCount = newCount
         utime.sleep(1)
-
-"""

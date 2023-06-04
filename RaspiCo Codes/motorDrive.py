@@ -19,10 +19,9 @@ def driveDC(speed1,speed2):
     # Both motors in forward direction
     m1.value(1)
     m2.value(0)
-    m3.value(1)
-    m4.value(0)
-    print(speed1)
-    print(speed2)
+    m3.value(0)
+    m4.value(1)
+
 #25000 sayilari duty cycle parametresidir. Cycle = sayi/65535"
     en1.duty_u16(int(speed1))  # motor 1 enable at 50% duty cycle
     en2.duty_u16(int(speed2))

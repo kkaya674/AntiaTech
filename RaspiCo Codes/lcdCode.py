@@ -12,8 +12,8 @@ I2C_NUM_COLS = 16
 
 i2c = I2C(0, sda=machine.Pin(16), scl=machine.Pin(17), freq=40000)
 lcd = I2cLcd(i2c, I2C_ADDR, I2C_NUM_ROWS, I2C_NUM_COLS)    
-utime.sleep(1)
-i = 0
+
+
 
 def writeStr(str1,str2):
     lcd.clear()
