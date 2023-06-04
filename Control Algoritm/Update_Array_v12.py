@@ -237,10 +237,12 @@ def afer_computer_ip():
 
 User_interface_command = [0] * 7
 User_interface_flag = 0
+connection = None
 
 
 def user_Interface():
     timeout = 10
+    global connection
     global User_interface_command
     global User_interface_flag
     while 1:
@@ -256,9 +258,14 @@ def user_Interface():
             if data != None:
                 if "InterfaceON" in data:
                     checkTime = time.time()
-                print(data)
-                User_interface_command = data
-                User_interface_flag = 1
+                if "]" in data:
+                    lastIndex = data.rindex("]")
+                    lastCommand = data[lastIndex - 15:]
+                    data = [int(lastCommand[2]), int(lastCommand[4]), int(lastCommand[6]), int(lastCommand[8]),
+                            int(lastCommand[10]), int(lastCommand[12]), int(lastCommand[14])]
+                    print(data)
+                    User_interface_command = data
+                    User_interface_flag = 1
 
             if elapsed_time > timeout:
                 print("Timeout Occured!, possible connection lost.")
@@ -743,6 +750,11 @@ while True:
             num_of_balls_returned[kubi_pico[4] + 18] += num_synch
             print("ball_count = ", ball_count)
             print("num_synch = ", num_synch)
+            try:
+                connection.sendall(bytes("Thrown:"+str(num_of_balls_thrown), 'utf-8'))
+                connection.sendall(bytes("Returned:"+str(num_of_balls_returned), 'utf-8'))
+            except:
+                print("Interface connection could not be found !!")
             print("returned ball number:", num_of_balls_returned)
             print("thrown ball number", num_of_balls_thrown)
             num_synch = 0
