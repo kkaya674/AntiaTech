@@ -591,7 +591,6 @@ def send_data(msg_list):
     ser.write(msg.encode('utf-8'))
 
 
-
 def read_ultrasonic_sensor():
     global ball_count
     global sensor_thread_running
