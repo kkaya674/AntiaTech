@@ -8,15 +8,11 @@ import communicate
 from machine import Pin 
 
 
-"""
-
-delay = 0.001
-Speed = 60
-spinSpeed = Speed-15
-spinDir = "TOP"
-"""
-
-freq_changed_flag = 0
+m1 = Pin(18, Pin.IN, Pin.PULL_DOWN)
+x = ""
+time1 = time.time()
+utime.sleep(1)
+oldCount = 0
 
 def ledToggle(value):
     if value == "True":
@@ -165,18 +161,20 @@ _thread.start_new_thread(reloader,(1, ))
 
 k = 0
 while True:
-    k+=1
+    
     barrel("0","0")
-    if k ==3:
-        k = -2
-    #servoRun.servo_Angle(100)
+
     servo1("2")
     servo2("0")
-    if freq != prev_freq:
-        freq_changed_flag = 1
-        utime.sleep(2)
-        #_thread.start_new_thread(reloader,(int("2"),))
-        prev_freq = freq
-        freq_changed_flag=0
-    prev_freq = freq
+    
+    x=x+str(m1.value())
+    time2 = time.time()
+    if not((time2-time1) % 10):
+        newCount = x.count("10")
+        rpmSpeed = newCount-oldCount
+        rpmSpeed = rpmSpeed*6
+        print("RPM :{}".format(rpmSpeed))
+        oldCount = newCount
+        utime.sleep(1)
+
 """
