@@ -373,20 +373,20 @@ def motor_parameters(op_mode, rand, data, counter, vec_random, last_data_pico, s
         elif op_mode == 1:  # sequence practicing
             if rand == 0:  # regular sequence practicing
                 if counter == 1:
-                    data_pico = [-2, 1, 2, -2, -1]
+                    data_pico = [-1, 1, 2, -2, -1]
                 elif counter == 2:
-                    data_pico = [0, 1, 1, -1, -1]
+                    data_pico = [0, 1, 2, -1, -1]
                 elif counter == 3:
-                    data_pico = [1, 1, 3, 0, 1]
+                    data_pico = [1, 1, 3, 1, 1]
                 else:
-                    data_pico = [2, 1, 1, 1, 1]
+                    data_pico = [1, 1, 1, 0, 2]
             else:  # random sequence practicing
                 if counter == 1:
-                    data_pico = [vec_random[0], 1, 1, -2, -1]
+                    data_pico = [vec_random[0], 1, 2, -2, -1]
                 elif counter == 2:
-                    data_pico = [vec_random[0], 1, 1, vec_random[3], -1]
+                    data_pico = [vec_random[0], 1, 2, vec_random[3], -1]
                 elif counter == 3:
-                    data_pico = [vec_random[0], 1, 1, vec_random[3], vec_random[4]]
+                    data_pico = [vec_random[0], 1, 2, vec_random[3], vec_random[4]]
                 else:
                     data_pico = [vec_random[0], 1, vec_random[2], vec_random[3], vec_random[4]]
 
