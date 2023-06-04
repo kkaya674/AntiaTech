@@ -172,6 +172,7 @@ while True:
     if not((time2-time1) % 10):
         newCount = x.count("10")
         rpmSpeed = newCount-oldCount
+        rpmSpeed = rpmSpeed*60
         print("RPM :{}".format(rpmSpeed))
         oldCount = newCount
         utime.sleep(1)
