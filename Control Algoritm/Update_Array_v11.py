@@ -58,7 +58,7 @@ stream = p.open(
     input=True
 )
 
-comm = 'sequence practicing'
+comm = 'repetition practicing'
 last_comm = 'adjust speed'
 
 user_pref = [0, 0, 0, 0, 0]
@@ -69,21 +69,21 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 step1 = 17
 step2 = 18
-step3 =27
+step3 = 27
 step4 = 22
 TRIG = 23
 ECHO = 24
 GPIO.setup(TRIG, GPIO.OUT)
 GPIO.setup(ECHO, GPIO.IN)
-GPIO.setup(step1, GPIO.OUT )
-GPIO.setup(step2, GPIO.OUT )
-GPIO.setup(step3, GPIO.OUT )
-GPIO.setup(step4, GPIO.OUT )
+GPIO.setup(step1, GPIO.OUT)
+GPIO.setup(step2, GPIO.OUT)
+GPIO.setup(step3, GPIO.OUT)
+GPIO.setup(step4, GPIO.OUT)
 
-GPIO.output(step1, GPIO.LOW )
-GPIO.output(step2, GPIO.LOW )
-GPIO.output(step3, GPIO.LOW )
-GPIO.output(step4, GPIO.LOW )
+GPIO.output(step1, GPIO.LOW)
+GPIO.output(step2, GPIO.LOW)
+GPIO.output(step3, GPIO.LOW)
+GPIO.output(step4, GPIO.LOW)
 
 motor_pins = [step4, step3, step2, step1]
 motor_step_counter = 0
@@ -91,13 +91,14 @@ motor_step_counter = 0
 step_count = 512
 
 """step_sequence = [[1, 0, 0, 1],
-                 [1, 0, 0, 0],
-                 [1, 1, 0, 0],
-                 [0, 1, 0, 0],
-                 [0, 1, 1, 0],
-                 [0, 0, 1, 0],
-                 [0, 0, 1, 1],
-                 [0, 0, 0, 1]]"""
+                    [1, 0, 0, 0],
+                    [1, 1, 0, 0],
+                    [0, 1, 0, 0],
+                    [0, 1, 1, 0],
+                    [0, 0, 1, 0],
+                    [0, 0, 1, 1],
+                    [0, 0, 0, 1]]"""
+
 step_sequence = [[1, 0, 0, 1],
                  [1, 1, 0, 0],
                  [0, 1, 1, 0],
@@ -168,19 +169,13 @@ def step_motor(sleep):
         for i in range(step_count):
             if execute_step == 1:
                 break
-            """for pin in range(0, len(motor_pins)):
-                if execute_step == 1:
-                    break
-                GPIO.output(motor_pins[pin], step_sequence[motor_step_counter][pin])
-                motor_step_counter = (motor_step_counter -1) % 8"""
             for j in range(4):
-                GPIO.output(motor_pins[3],step_sequence[j][0])
-                GPIO.output(motor_pins[2],step_sequence[j][1])
-                GPIO.output(motor_pins[1],step_sequence[j][2])
-                GPIO.output(motor_pins[0],step_sequence[j][3])
+                GPIO.output(motor_pins[3], step_sequence[j][0])
+                GPIO.output(motor_pins[2], step_sequence[j][1])
+                GPIO.output(motor_pins[1], step_sequence[j][2])
+                GPIO.output(motor_pins[0], step_sequence[j][3])
                 time.sleep(sleep)
 
-        
 
 def image_reset():
     global imageFlag
@@ -672,6 +667,6 @@ while True:
         f.write(str(num_of_balls_returned))
         f.close()
     if operating_mode != 0:
-        time.sleep(3 * seconds)
+        time.sleep(1.5*seconds)
     else:
-        time.sleep(seconds)
+        time.sleep(0.5*seconds)
