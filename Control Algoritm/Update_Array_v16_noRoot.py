@@ -51,10 +51,6 @@ sample_format = pyaudio.paInt16
 channels = 1
 fs = 44100
 seconds = 1
-x = os.getcwd()
-print(x)
-#os.system("cd /home/antia/Desktop/connection")
-
 os.chdir("/home/antia/Desktop/connection")
 filename = "/home/antia/Desktop/connection/commands.wav"
 r = sr.Recognizer()
@@ -684,17 +680,11 @@ def vibration_image():
                     pass
 
             # Continue with other tasks
-            # ...
-            received_data = ser_vibration.read()
-            time.sleep(0.03)
-            data_left = ser_vibration.inWaiting()
-            received_data += ser_vibration.read(data_left)
-            print(received_data)
-
-            if ser.in_waiting > 0:
+            
+            if ser_vibration.in_waiting > 0:
                 vibrationFlag = 1
                 vibrationTimer()
-                line = ser.readline().decode('utf-8').rstrip()
+                line = ser_vibration.readline().decode('utf-8').rstrip()
                 print(line)
                 checkSync()
 
@@ -711,7 +701,7 @@ k = 0
 ball_count = 0
 listener_thread = _thread.start_new_thread(listener, ())
 recognition_thread = _thread.start_new_thread(myf, (frames,))
-step_thread = _thread.start_new_thread(step_motor, (0.001,))
+# step_thread = _thread.start_new_thread(step_motor, (0.001,))
 # vibration_image_thread = _thread.start_new_thread(vibration_image, ())
 UI_thread = _thread.start_new_thread(user_Interface, ())
 while True:
@@ -793,6 +783,7 @@ while True:
     kubi_pico.pop()
     kubi_pico.pop()
     kubi_pico.pop()
+    """
     if freq_changed == 1:
         freq_changed = 0
         if on_off_switch == 1:
@@ -806,6 +797,7 @@ while True:
                 step_thread = _thread.start_new_thread(step_motor, (0.001,))
         else:
             execute_step = 1
+    """
     if foreground_feature == 'launching_angle':
         foreground_feature = 'launching angle'
     elif foreground_feature == 'serving_frequency':
