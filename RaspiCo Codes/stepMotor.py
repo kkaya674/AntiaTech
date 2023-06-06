@@ -55,7 +55,7 @@ def speedWrite(speed):
 
 
 # Step motor function
-def run(steps,freq,flag):
+def run(steps,freq):
     if freq == 0:
         DELAY = 0.005
     if freq == 1:
@@ -66,13 +66,7 @@ def run(steps,freq,flag):
     
     
     for i in range(steps):
-        if flag == 1:
-            break
-        for j in range(8):
-            if flag == 1:
-                print("flag = {}".format(flag))
-                break
-            
+        for j in range(8):            
             IN1.value(SEQ[j][0])
             IN2.value(SEQ[j][1])
             IN3.value(SEQ[j][2])
@@ -86,7 +80,7 @@ def run(steps,freq,flag):
             
         
            
-def reverseRun(steps,freq,flag):
+def reverseRun(steps,freq):
     #print("Reverse Run")
     #DELAY = speedCheck()
     k = 0
@@ -96,16 +90,7 @@ def reverseRun(steps,freq,flag):
         DELAY = 0.003
     if freq == 2:
         DELAY =0.002
-   
-    
-    
-    for i in range(steps):
-        if flag == 1:
-            break
-        for j in range(8):
-            if flag == 1:
-                #print("flag = {}".format(flag))
-                break
+    print(freq)
     for i in range(steps):
         for j in range(8):
             IN1.value(SEQ2[j][0])
@@ -129,4 +114,4 @@ def stopExecution():
     else:
         return 0
 
-        
+    

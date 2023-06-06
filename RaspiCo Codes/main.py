@@ -6,8 +6,10 @@ import servoRun2
 import utime
 import communicate
 from machine import Pin
-import lcdCode
 import time
+
+
+level = 0
 
 
 """
@@ -31,7 +33,7 @@ def ledToggle(value):
         led = 1
     else:
         led = 0
-    m1 = machine.Pin(0,pin.OUT)
+    m1 = machine.Pin(0,Pin.OUT)
     m2 = machine.Pin(1, Pin.OUT)
     m1.value(0)
     m2.value(led)
@@ -78,17 +80,17 @@ def barrel(spinDir,speed):
     ####Define Speed w.r.t Spin 
     if speed !="0":
         if spinDir == "-2":
-            spinSpeed = mainSpeed -30
+            spinSpeed = mainSpeed -20
         if spinDir == "-1":
-            spinSpeed = mainSpeed -15
+            spinSpeed = mainSpeed -10
         if spinDir == "0":
             spinSpeed = mainSpeed
         if spinDir == "1":
             spinSpeed = mainSpeed
-            mainSpeed = spinSpeed-15
+            mainSpeed = spinSpeed-10
         if spinDir == "2":
             spinSpeed = mainSpeed
-            mainSpeed = spinSpeed -30
+            mainSpeed = spinSpeed -20
     if speed == "-1" or speed =="0":
         spinSpeed = 0
         mainSpeed = 0
@@ -101,12 +103,12 @@ def barrel(spinDir,speed):
         
         
 
-def reloader(level):
-    global freq_changed_flag
+def reloader():
+    global level
     while True:
-        if freq_changed_flag == 1:
-            break
-        stepMotor.run(52, level,freq_changed_flag)
+        print(level)
+        stepMotor.run(300, level)
+        stepMotor.reverseRun(40,level)
         #stepMotor.reverseRun(20,level,freq_changed_flag)
         
         #stepMotor.reverseRun(32)
@@ -150,39 +152,53 @@ def servo2(lau):
     if lau == "2":
         servoRun2.servo_Angle(bottom+4*inc)
 print("start")
-"""
+
 k=0
-prev_freq ="1"
-led = 0
+"""
+_thread.start_new_thread(reloader,())
 while True:
     
     spin,freq,speed,direction,lau_angle,foreGround,mode,led = readCommand() ##datayi aliyor
+    level = int(freq)
+    print(mode)
     ledToggle(led)
     barrel(spin,speed) ##namlu spin ve speed bilgisini gönderek motor parametrelerini degistiriyor
     servo1(direction)
     servo2(lau_angle)
-    lcdCode.writeStr("Mode:{}".format(mode),"Speed:{}".format(speed))
+  
+    x=x+str(m1.value())
+
+    time2 = time.time()
+    if not((time2-time1) % 20):
+        rpmSpeed = x.count("10")*3
+        x = ""
+        print("RPM :{}".format(rpmSpeed))
+        utime.sleep(1)
+    
+
 
 
 
 
 """
-
-
-k = 1
-
+_thread.start_new_thread(reloader,())
+k = -1
 while True:
-        
+    
     barrel("0","0")
+    level =2
+    reloader()
     servo1("0")
-    servo2("0")
-    lcdCode.writeStr("deneme","rana")
+    servo2("2")
+    utime.sleep(2)
+
+    
+    """
     x=x+str(m1.value())
-    print(x)
-    print(x.count("1"))
+
     time2 = time.time()
-    if not((time2-time1) % 10):
-        rpmSpeed = x.count("1")*6
+    if not((time2-time1) % 20):
+        rpmSpeed = x.count("10")*3
         x = ""
         print("RPM :{}".format(rpmSpeed))
-        utime.sleep(1)
+        utime.sleep(1)"""
