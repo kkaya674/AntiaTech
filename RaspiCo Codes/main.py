@@ -70,7 +70,7 @@ def barrel(spinDir,speed):
     if speed == "0":
         mainSpeed = 0
     if speed == "1":
-        mainSpeed = 80
+        mainSpeed = 85
     if speed == "2":
         mainSpeed = 90
     if speed =="3":
@@ -80,17 +80,17 @@ def barrel(spinDir,speed):
     ####Define Speed w.r.t Spin 
     if speed !="0":
         if spinDir == "-2":
-            spinSpeed = mainSpeed -20
-        if spinDir == "-1":
             spinSpeed = mainSpeed -10
+        if spinDir == "-1":
+            spinSpeed = mainSpeed -5
         if spinDir == "0":
             spinSpeed = mainSpeed
         if spinDir == "1":
             spinSpeed = mainSpeed
-            mainSpeed = spinSpeed-10
+            mainSpeed = spinSpeed-5
         if spinDir == "2":
             spinSpeed = mainSpeed
-            mainSpeed = spinSpeed -20
+            mainSpeed = spinSpeed -10
     if speed == "-1" or speed =="0":
         spinSpeed = 0
         mainSpeed = 0
@@ -105,10 +105,15 @@ def barrel(spinDir,speed):
 
 def reloader():
     global level
+    print(level)
     while True:
-        print(level)
-        stepMotor.run(300, level)
-        stepMotor.reverseRun(40,level)
+        if level >=0:
+            stepMotor.reverseRun(50, level)
+        else:
+            level = abs(level)
+            stepMotor.run(50,level)
+            print("now reloader doesn't move")
+            utime.sleep(1)
         #stepMotor.reverseRun(20,level,freq_changed_flag)
         
         #stepMotor.reverseRun(32)
@@ -136,7 +141,7 @@ def servo1(direction):
     
 def servo2(lau):
  
-    bottom = 115
+    bottom = 120
     inc = 3
     if lau == "-2":
         servoRun2.servo_Angle(bottom)
@@ -160,7 +165,7 @@ while True:
     
     spin,freq,speed,direction,lau_angle,foreGround,mode,led = readCommand() ##datayi aliyor
     level = int(freq)
-    print(mode)
+    print(level)
     ledToggle(led)
     barrel(spin,speed) ##namlu spin ve speed bilgisini gönderek motor parametrelerini degistiriyor
     servo1(direction)
@@ -181,24 +186,32 @@ while True:
 
 
 """
+level = 0
 _thread.start_new_thread(reloader,())
 k = -1
+x = ""
+
 while True:
     
     barrel("0","0")
-    level =2
-    reloader()
+    freq = "2"
     servo1("0")
     servo2("2")
-    utime.sleep(2)
-
-    
-    """
-    x=x+str(m1.value())
-
     time2 = time.time()
-    if not((time2-time1) % 20):
-        rpmSpeed = x.count("10")*3
-        x = ""
-        print("RPM :{}".format(rpmSpeed))
-        utime.sleep(1)"""
+    x = x+str(m1.value())
+    if not((time2-time1) % 5):
+        utime.sleep(1)
+        check = x.count("1")
+        print(check)
+        if check == 0 :
+            level = -1
+            print("tikandi reis")
+        else:
+            level = int(freq)
+        x =""
+            
+        
+       
+       
+
+ 

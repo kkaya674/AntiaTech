@@ -57,13 +57,13 @@ def speedWrite(speed):
 # Step motor function
 def run(steps,freq):
     if freq == 0:
-        DELAY = 0.005
+        DELAY = 0.004
     if freq == 1:
         DELAY = 0.003
     if freq == 2:
         DELAY =0.002
    
-    
+    print(DELAY)
     
     for i in range(steps):
         for j in range(8):            
